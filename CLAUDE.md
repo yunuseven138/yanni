@@ -1,13 +1,14 @@
-# LeftClick Agency Website
+# SE7EN Agency Website
 
 ## Project Overview
 
-Multi-page marketing website for LeftClick, an AI automation agency. Static HTML files with embedded CSS and JavaScript—no build step required.
+Multi-page marketing website for SE7EN, an AI automation agency founded by Yunus Seven. Static HTML files with embedded CSS and JavaScript—no build step required.
 
 ## Related Sites
 
-- **Live Site**: https://leftclick-agency.netlify.app
-- **LeftClick.ai**: https://www.leftclick.ai
+- **GitHub**: https://github.com/yunuseven138/yanni
+- **Netlify account**: yunuseven138
+- **Calendly**: https://calendly.com/yunuseven138
 
 ## Tech Stack
 
@@ -20,11 +21,12 @@ Multi-page marketing website for LeftClick, an AI automation agency. Static HTML
 ## File Structure
 
 ```
-/Users/nicksaraev/leftclick-agency/
+c:/YUNUS/AI/CLAUDE/
 ├── index.html          # Main landing page (hero, case studies, process, services overview)
 ├── services.html       # Detailed services page (Lead Gen, PM, Hiring, Sales Admin systems)
-├── about.html          # About page (founders, story, timeline, values, press)
+├── about.html          # About page (story, founder, values, press)
 ├── contact.html        # Contact page (form, founder section)
+├── 404.html            # Not-found page (served automatically by Netlify)
 ├── netlify.toml        # Netlify configuration
 ├── .gitignore          # Git ignore rules
 ├── CLAUDE.md           # This file
@@ -63,7 +65,7 @@ git push origin main
 Feature branches often use `index.html` as their main file during development. When merging, this can **overwrite the main landing page**.
 
 **After merging, always verify:**
-1. `index.html` contains the **main landing page** (title: "LeftClick | AI Automation Agency")
+1. `index.html` contains the **main landing page** (title: "SE7EN | AI Automation Agency")
 2. Feature content is in its **dedicated file** (e.g., `services.html`, not `index.html`)
 
 **If a feature branch overwrote index.html:**
@@ -117,7 +119,7 @@ Squared/luxe aesthetic — avoid rounded pills:
 - Large: `8px`
 
 ### Logo
-Plain text wordmark: "LeftClick" where "Click" is rendered in emerald green (`#10b981`).
+Plain text wordmark: "SE7EN" where the "7" is rendered in emerald green (`#10b981`): `SE<span>7</span>EN`.
 
 ## Page Structure
 
@@ -148,16 +150,15 @@ Plain text wordmark: "LeftClick" where "Click" is rendered in emerald green (`#1
 ### about.html (About)
 1. **Hero** — Company origin story headline with gradient orbs
 2. **Story Section** — Company history and early AI adoption narrative
-3. **Founders Section** — Profiles for Nick Saraev (CEO) and Noah Edis (COO)
-4. **Timeline Section** — Key milestones from 2020-2025
-5. **Values Section** — 6-card grid of company principles
-6. **Press Section** — Featured media logos (Popular Mechanics, Apple News, Bloomberg, Indie Hackers)
-7. **CTA** — Call-to-action linking to Calendly
+3. **Founder Section** — Single profile for Yunus Seven (Founder & CEO), `.founders-grid.solo`
+4. **Values Section** — 6-card grid of company principles
+5. **Press Section** — Featured media logos (placeholders, not verified)
+6. **CTA** — Call-to-action linking to Calendly
 
 ### contact.html (Contact)
 1. **Hero** — Contact headline
 2. **Contact Form** — Name, email, company, message fields
-3. **Founder Section** — Direct contact info
+3. **Founder Section** — Yunus Seven, with a Calendly link (no public email yet)
 4. **CTA** — Calendly booking link
 
 ## Interactive Features
@@ -187,7 +188,7 @@ netlify deploy
 
 ## External Dependencies
 
-- **Calendly**: Meeting booking at `calendly.com/leftclick-meeting-30`
+- **Calendly**: Meeting booking at `calendly.com/yunuseven138`
 - **Google Fonts**: Inter font family via CDN
 - **No npm packages** — Zero build dependencies
 
@@ -203,7 +204,7 @@ Search for hex codes:
 - Dark green: `#059669`
 
 ### Update Calendly Link
-Search for `calendly.com/leftclick-meeting-30` and replace across all files.
+Search for `calendly.com/yunuseven138` and replace across all files.
 
 ### Update Pricing (services.html)
 Find the `.pricing-section`. Each tier has:
@@ -215,6 +216,8 @@ Find the `.pricing-section`. Each tier has:
 Each service category has a `.services-detail-grid` containing `.service-detail-card` elements.
 
 ## Notes
+
+- Testimonials, case-study numbers and press logos are **placeholders**; replace with real data before launch
 
 - Keep the single-file architecture — no bundlers or build steps
 - Maintain the squared corner aesthetic (no pills)

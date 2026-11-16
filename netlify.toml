@@ -1,4 +1,4 @@
-# Netlify Configuration for LeftClick Agency Website
+# Netlify Configuration for SE7EN Agency Website
 # https://docs.netlify.com/configure-builds/file-based-configuration/
 
 [build]
@@ -23,8 +23,5 @@
   [headers.values]
     Cache-Control = "public, max-age=0, must-revalidate"
 
-# Redirects
-[[redirects]]
-  from = "/*"
-  to = "/index.html"
-  status = 200
+# No catch-all redirect: this is a multi-page static site.
+# Unknown URLs fall through to 404.html, which Netlify serves automatically.

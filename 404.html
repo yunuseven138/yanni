@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Page Not Found | SE7EN</title>
+    <meta name="robots" content="noindex">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --black: #000000;
+            --black-medium: #111111;
+            --green-primary: #10b981;
+            --green-bright: #34d399;
+            --green-glow: rgba(16, 185, 129, 0.12);
+            --white: #ffffff;
+            --gray-400: #a3a3a3;
+            --radius-md: 6px;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--black);
+            color: var(--white);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 24px;
+            text-align: center;
+            -webkit-font-smoothing: antialiased;
+            background-image: radial-gradient(circle at 50% 40%, var(--green-glow) 0%, transparent 50%);
+        }
+
+        .logo {
+            position: absolute;
+            top: 24px;
+            left: 24px;
+            font-size: 1.25rem;
+            font-weight: 600;
+            letter-spacing: -0.03em;
+            color: var(--white);
+            text-decoration: none;
+        }
+
+        .logo span { color: var(--green-primary); }
+
+        .code {
+            font-size: clamp(5rem, 18vw, 9rem);
+            font-weight: 800;
+            letter-spacing: -0.05em;
+            line-height: 1;
+            color: var(--green-primary);
+        }
+
+        h1 {
+            font-size: clamp(1.5rem, 4vw, 2.25rem);
+            font-weight: 800;
+            letter-spacing: -0.03em;
+            margin: 16px 0 12px;
+        }
+
+        p {
+            color: var(--gray-400);
+            max-width: 420px;
+            line-height: 1.6;
+            margin-bottom: 32px;
+        }
+
+        .actions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            justify-content: center;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 14px 28px;
+            border-radius: var(--radius-md);
+            font-weight: 600;
+            font-size: 0.95rem;
+            text-decoration: none;
+            transition: background 0.2s ease, border-color 0.2s ease;
+        }
+
+        .btn-primary { background: var(--green-primary); color: var(--black); }
+        .btn-primary:hover { background: var(--green-bright); }
+        .btn-secondary { border: 1px solid rgba(255,255,255,0.15); color: var(--white); }
+        .btn-secondary:hover { border-color: rgba(255,255,255,0.35); }
+    </style>
+</head>
+<body>
+    <a href="/" class="logo">SE<span>7</span>EN</a>
+    <div class="code">404</div>
+    <h1>This page doesn't exist</h1>
+    <p>The link may be broken or the page may have moved. Let's get you back on track.</p>
+    <div class="actions">
+        <a href="/" class="btn btn-primary">Back to Home</a>
+        <a href="/services.html" class="btn btn-secondary">View Services</a>
+    </div>
+</body>
+</html>
