@@ -33,8 +33,7 @@ c:/YUNUS/AI/CLAUDE/
 ├── netlify/
 │   └── edge-functions/
 │       └── profile.ts      # JSON API: GET /api/profile and /api/profile/:section
-├── netlify.toml            # Netlify configuration (no catch-all redirect)
-├── .gitignore
+├── netlify.toml            # Netlify configuration (no catch-all redirect; hides /netlify/*)├── .gitignore
 ├── CLAUDE.md               # This file
 └── .netlify/               # Netlify local state (gitignored)
 ```

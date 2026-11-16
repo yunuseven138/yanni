@@ -23,5 +23,13 @@
   [headers.values]
     Cache-Control = "public, max-age=0, must-revalidate"
 
+# The publish dir is the repo root, so stop edge function source files
+# (netlify/edge-functions/*) from also being served as static files.
+[[redirects]]
+  from = "/netlify/*"
+  to = "/404.html"
+  status = 404
+  force = true
+
 # No catch-all redirect: this is a multi-page static site.
 # Unknown URLs fall through to 404.html, which Netlify serves automatically.
