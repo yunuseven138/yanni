@@ -150,6 +150,7 @@ export default async (_request: Request, context: Context) => {
 
 export const config: Config = {
   path: ["/api/profile", "/api/profile/:section"],
-  method: ["GET", "HEAD"],
+  // Netlify only accepts GET, POST, PUT, PATCH, DELETE, OPTIONS here (not HEAD).
+  method: ["GET"],
   cache: "manual",
 };
