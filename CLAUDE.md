@@ -1,94 +1,52 @@
-# SE7EN Agency Website
+# Yunus Seven — Personal CV Website
 
 ## Project Overview
 
-Multi-page marketing website for SE7EN, an AI automation agency founded by Yunus Seven. Static HTML files with embedded CSS and JavaScript—no build step required.
+Single-page personal CV website for Yunus Seven, Senior Quality Engineer (automotive & aerospace). Audience: recruiters and hiring managers. Static HTML with embedded CSS and JavaScript—no build step required.
+
+All content comes from Yunus's CV (`Yunus_Seven_CV_2026.pdf`). Keep the site factual: no invented metrics, testimonials or claims.
 
 ## Related Sites
 
+- **Live site**: https://se7enai.netlify.app/
 - **GitHub**: https://github.com/yunuseven138/yanni
 - **Netlify account**: yunuseven138
-- **Calendly**: https://calendly.com/yunuseven138
+- **LinkedIn**: https://www.linkedin.com/in/yunus-seven/
+- **Calendly (30-min call)**: https://calendly.com/yunuseven138/30min
 
 ## Tech Stack
 
 - **Framework**: Static HTML (no build step)
 - **Styling**: Embedded CSS
 - **JavaScript**: Vanilla JS, embedded
-- **Hosting**: Netlify
+- **Hosting**: Netlify (Netlify Forms for the contact form)
 - **Fonts**: Inter (Google Fonts CDN)
 
 ## File Structure
 
 ```
 c:/YUNUS/AI/CLAUDE/
-├── index.html          # Main landing page (hero, case studies, process, services overview)
-├── services.html       # Detailed services page (Lead Gen, PM, Hiring, Sales Admin systems)
-├── about.html          # About page (story, founder, values, press)
-├── contact.html        # Contact page (form, founder section)
-├── 404.html            # Not-found page (served automatically by Netlify)
-├── netlify.toml        # Netlify configuration
-├── .gitignore          # Git ignore rules
-├── CLAUDE.md           # This file
-└── .netlify/           # Netlify local state (gitignored)
+├── index.html              # The whole CV site (single page)
+├── 404.html                # Not-found page (served automatically by Netlify)
+├── yunus-seven.jpg         # Profile photo (hero portrait + og:image); initials shown if missing
+├── Yunus_Seven_CV_2026.pdf # Downloadable CV; "Download CV" buttons hide if missing
+├── netlify.toml            # Netlify configuration (no catch-all redirect)
+├── .gitignore
+├── CLAUDE.md               # This file
+└── .netlify/               # Netlify local state (gitignored)
 ```
 
-## Git Workflow
+## Page Structure (index.html)
 
-### Branch Naming Convention
-
-Feature branches use the `feature/` prefix:
-- `feature/services-page`
-- `feature/about-page`
-- `feature/contact-page`
-
-### Merging Feature Branches
-
-When merging multiple feature branches into main:
-
-```bash
-# 1. Check current status and list branches
-git status
-git branch -a
-
-# 2. Merge each feature branch
-git merge feature/services-page -m "Merge feature/services-page: description"
-git merge feature/about-page -m "Merge feature/about-page: description"
-git merge feature/contact-page -m "Merge feature/contact-page: description"
-
-# 3. Push to remote
-git push origin main
-```
-
-### IMPORTANT: Handling index.html Conflicts
-
-Feature branches often use `index.html` as their main file during development. When merging, this can **overwrite the main landing page**.
-
-**After merging, always verify:**
-1. `index.html` contains the **main landing page** (title: "SE7EN | AI Automation Agency")
-2. Feature content is in its **dedicated file** (e.g., `services.html`, not `index.html`)
-
-**If a feature branch overwrote index.html:**
-```bash
-# 1. Save the feature content to its proper file
-cp index.html services.html  # or about.html, contact.html
-
-# 2. Restore the original landing page from before the merge
-git show <commit-before-merge>:index.html > index.html
-
-# 3. Commit the fix
-git add index.html services.html
-git commit -m "fix: Restore landing page, move services to services.html"
-```
-
-**To find the original index.html:**
-```bash
-# View commit history
-git log --oneline
-
-# Show index.html from a specific commit
-git show f87222a:index.html | head -20
-```
+1. **Nav** — Logo, section anchors (Profile, Experience, Skills, Education, Contact), Download CV button
+2. **Hero** (`#top`) — Title, intro, Download CV / Get in touch, portrait with "Open to new opportunities" badge, 3 stat counters (8+ years, 2 industries, 4 languages)
+3. **Companies** — "Where I've worked" strip (JLR, TEI, Birinci Automotive, Borusan Mannesmann)
+4. **Profile** (`#profile`) — 3 summary cards (manufacturing, standards, data-driven problem solving)
+5. **Experience** (`#experience`) — Timeline of `.job` cards; the current role has `.current`
+6. **Skills** (`#skills`) — 6 `.skill-group` cards with `.chips`
+7. **Education** (`#education`) — `.edu-item` list plus language bars (`--level` sets the width)
+8. **Contact** (`#contact`) — Email, phone, LinkedIn, location, Calendly button, Netlify form
+9. **Footer**
 
 ## Design System
 
@@ -96,131 +54,52 @@ git show f87222a:index.html | head -20
 | Token | Hex | Usage |
 |-------|-----|-------|
 | Black base | `#000000` | Background |
-| Dark gray | `#0a0a0a`, `#111111` | Cards, sections |
+| Dark gray | `#0a0a0a`, `#111111` | Cards, alternate sections |
 | Emerald primary | `#10b981` | Accents, CTAs |
 | Emerald light | `#34d399` | Hover states |
-| Emerald dark | `#059669` | Active states |
-| Accent blue | `#0098f2` | Secondary accent (Services: Project Management) |
-| Accent purple | `#6c56fc` | Secondary accent (Services: Hiring) |
-| Accent magenta | `#f200ca` | Secondary accent (Services: Sales Admin) |
+| Emerald dark | `#059669` | Active states, gradients |
+| Accent blue | `#0098f2` | Secondary accent |
+| Accent purple | `#6c56fc` | Secondary accent |
+| Accent magenta | `#f200ca` | Secondary accent |
 | Error | `#ff6363` | Form validation errors |
 
-Emerald stays the primary brand colour. Secondary accents are for differentiation only (one per section, or one per card in a categorical grid such as personas or the problem comparison), never CTAs. Set `--accent` on a section (or use `.accent-blue` / `.accent-purple` / `.accent-magenta`); tints derive from it via `color-mix(in srgb, var(--accent) 16%, transparent)`.
+Emerald stays the primary colour. Secondary accents are for differentiation only (one per section, or one per card in a categorical grid such as the profile and skills cards), never CTAs. Use `.accent-blue` / `.accent-purple` / `.accent-magenta`; tints derive via `color-mix(in srgb, var(--accent) 16%, transparent)`.
 
 ### Typography
-- **Font**: Inter
-- **Weights**: 300-800
-- **Letter spacing**: -0.03em (tight)
+- **Font**: Inter, weights 300–800
+- **Letter spacing**: -0.03em on headings
 
 ### Corner Radii
-Squared/luxe aesthetic — avoid rounded pills:
-- Small: `4px`
-- Medium: `6px`
-- Large: `8px`
+Squared aesthetic — no pills: `4px` / `6px` / `8px`.
 
 ### Logo
-Plain text wordmark: "SE7EN" where the "7" is rendered in emerald green (`#10b981`): `SE<span>7</span>EN`.
-
-## Page Structure
-
-### index.html (Main Landing Page)
-1. **Hero** — Headline, subtitle, CTA buttons, floating tech icons
-2. **Social Proof** — Scrolling logo ticker (Make, n8n, Zapier, etc.)
-3. **Pull Quote** — Single large testimonial card (`.pull-quote`)
-4. **Who It's For** — 4 persona cards, each with its own accent (`.personas`)
-5. **Problem** — Slow / Expensive / Fragile comparison with tinted panels, plus emerald solution bar (`.problem`)
-6. **Case Studies** — 3 cards with stats (SaaS, E-Commerce, Agency)
-7. **How It Works** — 3-step process (Growth Mapping, Scope & Architecture, Build & Deploy)
-8. **Services Overview** — 6 service cards (Workflow, AI, Data, Chatbots, Reporting, Custom)
-9. **CTA** — Final call-to-action with Calendly link
-10. **Footer** — Logo, nav links, copyright
-
-### services.html (Detailed Services)
-1. **Hero** — Stats-focused hero with key metrics
-2. **Lead Generation Systems** — AI Cold Email, Application Systems, Content Systems
-3. **Project Management Systems** — Automated Fulfillment, Onboarding, PM Workflows
-4. **Hiring Systems** — Intake Systems, AI Scoring, Trial Processes
-5. **Sales Administration** — Custom CRMs, AI Asset Generators, Nurture Systems
-6. **Who It's For** — Target personas (Agencies, SaaS, Professional Services, E-Commerce)
-7. **Results/Testimonials** — Client success stories
-8. **Process** — 4-step timeline (Discovery, Design, Build, Launch)
-9. **Pricing** — Three tiers (Single System, Growth Package, Retainer)
-10. **CTA** — Final call-to-action
-
-### about.html (About)
-1. **Hero** — Company origin story headline with gradient orbs
-2. **Story Section** — Company history and early AI adoption narrative
-3. **Founder Section** — Single profile for Yunus Seven (Founder & CEO), `.founders-grid.solo`
-4. **Values Section** — 6-card grid of company principles
-5. **Press Section** — Featured media logos (placeholders, not verified)
-6. **CTA** — Call-to-action linking to Calendly
-
-### contact.html (Contact)
-1. **Hero** — Contact headline
-2. **Contact Form** — Name, email, company, message fields
-3. **Founder Section** — Yunus Seven, with a Calendly link (no public email yet)
-4. **CTA** — Calendly booking link
+Plain text: `Yunus Seven<span>.</span>` with the full stop in emerald.
 
 ## Interactive Features
 
-- Scroll-triggered reveal animations via Intersection Observer
+- Scroll-triggered reveals (Intersection Observer), disabled under `prefers-reduced-motion`
 - Animated counters with easeOutQuart easing
-- Mouse-following cursor glow effect (desktop only)
-- Scroll progress indicator in header
-- Smooth scroll navigation
-- Fully responsive down to mobile
+- Cursor glow (desktop, hover-capable devices only)
+- Scroll progress bar
+- Download CV buttons hidden automatically if the PDF isn't deployed
+
+## Common Tasks
+
+### Add a new job
+Copy an `<article class="job">` in `#experience`, put it at the top, and move the `current` class and the `Current` tag to it.
+
+### Update the CV PDF or photo
+Replace `Yunus_Seven_CV_2026.pdf` / `yunus-seven.jpg` in the repo root (keep the filenames, or update every reference in `index.html`).
 
 ## Deployment
 
-### Deploy to Production
+If the Netlify site is connected to the GitHub repo, pushing to `main` deploys. To deploy manually:
 ```bash
 netlify deploy --prod
 ```
 
-### Preview Deploy
-```bash
-netlify deploy
-```
-
-### Requirements
-- Netlify CLI installed (`npm install -g netlify-cli`)
-- Authenticated with Netlify (`netlify login`)
-
-## External Dependencies
-
-- **Calendly**: Meeting booking at `calendly.com/yunuseven138`
-- **Google Fonts**: Inter font family via CDN
-- **No npm packages** — Zero build dependencies
-
-## Common Tasks
-
-### Update Content
-Edit the relevant HTML file directly. All content, styles, and scripts are embedded.
-
-### Change Colors
-Search for hex codes:
-- Primary green: `#10b981`
-- Light green: `#34d399`
-- Dark green: `#059669`
-
-### Update Calendly Link
-Search for `calendly.com/yunuseven138` and replace across all files.
-
-### Update Pricing (services.html)
-Find the `.pricing-section`. Each tier has:
-- `.pricing-name` — tier name
-- `.pricing-amount` — price
-- `.pricing-features` — feature list
-
-### Add/Remove Services (services.html)
-Each service category has a `.services-detail-grid` containing `.service-detail-card` elements.
-
 ## Notes
-
-- Testimonials, case-study numbers and press logos are **placeholders**; replace with real data before launch
 
 - Keep the single-file architecture — no bundlers or build steps
 - Maintain the squared corner aesthetic (no pills)
-- Test scroll animations after content changes
-- Counter animations trigger on scroll into view
-- **index.html is the main landing page** — don't overwrite with feature content
+- Email and phone are published intentionally at Yunus's request
