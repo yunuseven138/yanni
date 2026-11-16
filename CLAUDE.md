@@ -98,6 +98,12 @@ git show f87222a:index.html | head -20
 | Emerald primary | `#10b981` | Accents, CTAs |
 | Emerald light | `#34d399` | Hover states |
 | Emerald dark | `#059669` | Active states |
+| Accent blue | `#0098f2` | Secondary accent (Services: Project Management) |
+| Accent purple | `#6c56fc` | Secondary accent (Services: Hiring) |
+| Accent magenta | `#f200ca` | Secondary accent (Services: Sales Admin) |
+| Error | `#ff6363` | Form validation errors |
+
+Emerald stays the primary brand colour. Secondary accents are for differentiation only (one per section, or one per card in a categorical grid such as personas or the problem comparison), never CTAs. Set `--accent` on a section (or use `.accent-blue` / `.accent-purple` / `.accent-magenta`); tints derive from it via `color-mix(in srgb, var(--accent) 16%, transparent)`.
 
 ### Typography
 - **Font**: Inter
@@ -118,11 +124,14 @@ Plain text wordmark: "LeftClick" where "Click" is rendered in emerald green (`#1
 ### index.html (Main Landing Page)
 1. **Hero** — Headline, subtitle, CTA buttons, floating tech icons
 2. **Social Proof** — Scrolling logo ticker (Make, n8n, Zapier, etc.)
-3. **Case Studies** — 3 cards with stats (SaaS, E-Commerce, Agency)
-4. **How It Works** — 3-step process (Growth Mapping, Scope & Architecture, Build & Deploy)
-5. **Services Overview** — 6 service cards (Workflow, AI, Data, Chatbots, Reporting, Custom)
-6. **CTA** — Final call-to-action with Calendly link
-7. **Footer** — Logo, nav links, copyright
+3. **Pull Quote** — Single large testimonial card (`.pull-quote`)
+4. **Who It's For** — 4 persona cards, each with its own accent (`.personas`)
+5. **Problem** — Slow / Expensive / Fragile comparison with tinted panels, plus emerald solution bar (`.problem`)
+6. **Case Studies** — 3 cards with stats (SaaS, E-Commerce, Agency)
+7. **How It Works** — 3-step process (Growth Mapping, Scope & Architecture, Build & Deploy)
+8. **Services Overview** — 6 service cards (Workflow, AI, Data, Chatbots, Reporting, Custom)
+9. **CTA** — Final call-to-action with Calendly link
+10. **Footer** — Logo, nav links, copyright
 
 ### services.html (Detailed Services)
 1. **Hero** — Stats-focused hero with key metrics
