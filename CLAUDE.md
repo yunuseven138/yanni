@@ -8,7 +8,7 @@ All content comes from Yunus's CV (`Yunus_Seven_CV_2026.pdf`). Keep the site fac
 
 ## Related Sites
 
-- **Live site**: https://se7enai.netlify.app/
+- **Live site**: https://yunusseven.netlify.app/
 - **GitHub**: https://github.com/yunuseven138/yanni
 - **Netlify account**: yunuseven138
 - **LinkedIn**: https://www.linkedin.com/in/yunus-seven/
@@ -30,6 +30,9 @@ c:/YUNUS/AI/CLAUDE/
 ├── 404.html                # Not-found page (served automatically by Netlify)
 ├── yunus-seven.jpg         # Profile photo (hero portrait + og:image); initials shown if missing
 ├── Yunus_Seven_CV_2026.pdf # Downloadable CV; "Download CV" buttons hide if missing
+├── netlify/
+│   └── edge-functions/
+│       └── profile.ts      # JSON API: GET /api/profile and /api/profile/:section
 ├── netlify.toml            # Netlify configuration (no catch-all redirect)
 ├── .gitignore
 ├── CLAUDE.md               # This file
@@ -39,7 +42,7 @@ c:/YUNUS/AI/CLAUDE/
 ## Page Structure (index.html)
 
 1. **Nav** — Logo, section anchors (Profile, Experience, Skills, Education, Contact), Download CV button
-2. **Hero** (`#top`) — Title, intro, Download CV / Get in touch, portrait with "Open to new opportunities" badge, 3 stat counters (8+ years, 2 industries, 4 languages)
+2. **Hero** (`#top`) — Title, intro, Download CV / Get in touch, portrait (photo from the CV), 3 stat counters (8+ years, 2 industries, 4 languages)
 3. **Companies** — "Where I've worked" strip (JLR, TEI, Birinci Automotive, Borusan Mannesmann)
 4. **Profile** (`#profile`) — 3 summary cards (manufacturing, standards, data-driven problem solving)
 5. **Experience** (`#experience`) — Timeline of `.job` cards; the current role has `.current`
@@ -90,6 +93,9 @@ Copy an `<article class="job">` in `#experience`, put it at the top, and move th
 
 ### Update the CV PDF or photo
 Replace `Yunus_Seven_CV_2026.pdf` / `yunus-seven.jpg` in the repo root (keep the filenames, or update every reference in `index.html`).
+
+### Update the JSON API
+`netlify/edge-functions/profile.ts` holds a copy of the CV content. Whenever you change a job, skill, education entry or contact detail in `index.html`, make the same change there.
 
 ## Deployment
 

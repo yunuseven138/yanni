@@ -8,9 +8,9 @@
     <meta property="og:title" content="Yunus Seven | Senior Quality Engineer">
     <meta property="og:description" content="8 years of production quality engineering across automotive and aerospace. Jaguar Land Rover, TEI, Birinci Automotive.">
     <meta property="og:type" content="profile">
-    <meta property="og:url" content="https://se7enai.netlify.app/">
-    <meta property="og:image" content="https://se7enai.netlify.app/yunus-seven.jpg">
-    <link rel="canonical" href="https://se7enai.netlify.app/">
+    <meta property="og:url" content="https://yunusseven.netlify.app/">
+    <meta property="og:image" content="https://yunusseven.netlify.app/yunus-seven.jpg">
+    <link rel="canonical" href="https://yunusseven.netlify.app/">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
@@ -169,13 +169,6 @@
         }
         .portrait.no-photo img { display: none; }
         .portrait.no-photo .portrait-fallback { display: flex; }
-        .portrait-badge {
-            position: absolute; left: 16px; right: 16px; bottom: 16px; padding: 12px 14px;
-            background: rgba(0,0,0,0.75); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
-            border: 1px solid rgba(255,255,255,0.08); border-radius: var(--radius-md);
-            font-size: 0.82rem; color: var(--gray-300); display: flex; align-items: center; gap: 10px;
-        }
-        .portrait-badge::before { content: ''; width: 8px; height: 8px; border-radius: 50%; background: var(--green-primary); flex-shrink: 0; }
 
         .hero-stats { position: relative; display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-top: 72px; padding-top: 32px; border-top: 1px solid var(--line); }
         .stat-value { font-size: clamp(1.8rem, 4vw, 2.6rem); font-weight: 800; letter-spacing: -0.03em; color: var(--green-primary); line-height: 1; font-variant-numeric: tabular-nums; }
@@ -362,7 +355,6 @@
                     <div class="portrait" id="portrait">
                         <img src="yunus-seven.jpg" alt="Portrait of Yunus Seven" width="380" height="475" onerror="this.parentElement.classList.add('no-photo')">
                         <div class="portrait-fallback" aria-hidden="true">YS</div>
-                        <div class="portrait-badge">Open to new opportunities</div>
                     </div>
                 </div>
             </div>
