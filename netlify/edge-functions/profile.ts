@@ -12,6 +12,12 @@ const profile = {
   location: "Warwick, United Kingdom",
   summary:
     "Production quality engineer with 8 years across serial and prototype manufacturing in automotive and aerospace. Currently at Jaguar Land Rover, previously Lead Engineer for aviation engine parts at TEI, a General Electric joint venture.",
+  workEligibility: {
+    country: "United Kingdom",
+    fullRightToWork: true,
+    requiresVisaSponsorship: false,
+  },
+  availableFrom: "2027-04",
   contact: {
     email: "yunus.seven@darussafaka.net",
     phone: "07493 222 972",
