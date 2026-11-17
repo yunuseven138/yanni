@@ -1,0 +1,1198 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Site traffic | Yunus Seven</title>
+    <meta name="description" content="Anonymous visit statistics for Yunus Seven's CV website: daily and monthly visits, CV downloads, sources, countries and devices.">
+    <meta name="robots" content="noindex">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --black: #000000;
+            --black-light: #0a0a0a;
+            --black-medium: #111111;
+            --black-soft: #1a1a1a;
+            --green-primary: #10b981;
+            --green-bright: #34d399;
+            --green-dark: #059669;
+            --green-glow: rgba(16, 185, 129, 0.12);
+            --green-subtle: rgba(16, 185, 129, 0.06);
+            --accent-blue: #0098f2;
+            --accent-purple: #6c56fc;
+            --accent-magenta: #f200ca;
+            --error: #ff6363;
+            --error-tint: rgba(255, 99, 99, 0.16);
+            --accent: var(--green-primary);
+            --white: #ffffff;
+            --gray-300: #d4d4d4;
+            --gray-400: #a3a3a3;
+            --gray-500: #737373;
+            --gray-600: #525252;
+            --gray-800: #262626;
+            --line: rgba(255, 255, 255, 0.06);
+            --radius-sm: 4px;
+            --radius-md: 6px;
+            --radius-lg: 8px;
+            --ease: cubic-bezier(0.4, 0, 0.2, 1);
+            /* Chart series, validated for this dark surface (lightness band, CVD and contrast checks) */
+            --series-visits: #059669;
+            --series-visits-hover: #10b981;
+            --series-downloads: #6c56fc;
+            --chart-grid: rgba(255, 255, 255, 0.07);
+            --chart-axis: rgba(255, 255, 255, 0.18);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        html { scroll-padding-top: 88px; } /* in-page links land below the fixed nav */
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--black);
+            color: var(--white);
+            line-height: 1.6;
+            overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        a { color: inherit; }
+        button { font: inherit; color: inherit; }
+
+        .container { max-width: 1200px; margin: 0 auto; padding: 0 24px; }
+        @media (min-width: 768px) { .container { padding: 0 48px; } }
+
+        .sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); clip-path: inset(50%); white-space: nowrap; }
+
+        /* Reveal */
+        .reveal { opacity: 0; transform: translateY(40px); transition: opacity 0.8s var(--ease), transform 0.8s var(--ease); }
+        .reveal.active { opacity: 1; transform: none; }
+        .reveal-delay-1 { transition-delay: 0.1s; }
+        .reveal-delay-2 { transition-delay: 0.2s; }
+
+        /* Nav (same look as the CV page) */
+        nav {
+            position: fixed; top: 0; left: 0; right: 0; z-index: 1000; padding: 18px 0;
+            background: linear-gradient(to bottom, rgba(0,0,0,0.9), rgba(0,0,0,0));
+            backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+            transition: background 0.3s var(--ease), border-color 0.3s var(--ease);
+            border-bottom: 1px solid transparent;
+        }
+        nav.scrolled { background: rgba(0,0,0,0.95); border-bottom-color: rgba(255,255,255,0.05); }
+        .nav-content { display: flex; justify-content: space-between; align-items: center; gap: 16px; }
+        .logo { font-size: 1.15rem; font-weight: 700; letter-spacing: -0.03em; text-decoration: none; white-space: nowrap; }
+        .logo span { color: var(--green-primary); }
+
+        /* Buttons */
+        .btn {
+            display: inline-flex; align-items: center; justify-content: center; gap: 10px;
+            padding: 14px 26px; border-radius: var(--radius-md);
+            font-weight: 600; font-size: 0.95rem; text-decoration: none; border: 1px solid transparent;
+            cursor: pointer; font-family: inherit; white-space: nowrap;
+            transition: background 0.2s ease, border-color 0.2s ease, transform 0.2s var(--ease);
+        }
+        .btn svg { width: 18px; height: 18px; flex-shrink: 0; }
+        .btn-primary { background: var(--green-primary); color: var(--black); box-shadow: 0 0 40px var(--green-glow); }
+        .btn-primary:hover { background: var(--green-bright); transform: translateY(-2px); }
+        .btn-secondary { border-color: rgba(255,255,255,0.15); color: var(--white); background: transparent; }
+        .btn-secondary:hover { border-color: rgba(255,255,255,0.35); transform: translateY(-2px); }
+        .btn-sm { padding: 10px 18px; font-size: 0.85rem; }
+        .btn-sm svg { width: 16px; height: 16px; }
+        .btn:focus-visible, .range button:focus-visible, .table-view summary:focus-visible { outline: 2px solid var(--green-primary); outline-offset: 2px; }
+
+        /* Page header */
+        .page-head { position: relative; padding: 136px 0 36px; overflow: hidden; }
+        .page-head::before {
+            content: ''; position: absolute; inset: 0; pointer-events: none;
+            background:
+                radial-gradient(ellipse at 80% 0%, rgba(16,185,129,0.14) 0%, transparent 50%),
+                linear-gradient(rgba(255,255,255,0.025) 1px, transparent 1px) 0 0 / 64px 64px,
+                linear-gradient(90deg, rgba(255,255,255,0.025) 1px, transparent 1px) 0 0 / 64px 64px;
+            mask-image: linear-gradient(to bottom, black 40%, transparent);
+            -webkit-mask-image: linear-gradient(to bottom, black 40%, transparent);
+        }
+        .page-head .container { position: relative; }
+        .section-tag {
+            display: inline-flex; align-items: center; gap: 10px; margin-bottom: 16px;
+            color: var(--accent); font-size: 0.8rem; font-weight: 600; letter-spacing: 0.15em; text-transform: uppercase;
+        }
+        .section-tag::before { content: ''; width: 28px; height: 1px; background: var(--accent); }
+        .page-title { font-size: clamp(2.3rem, 5.5vw, 3.75rem); font-weight: 800; letter-spacing: -0.04em; line-height: 1.05; }
+        .page-lead { margin-top: 16px; max-width: 640px; color: var(--gray-400); font-size: clamp(1rem, 1.5vw, 1.1rem); }
+        .page-meta { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 16px; margin-top: 20px; color: var(--gray-400); font-size: 0.85rem; }
+        .page-meta:empty { display: none; }
+        .test-badge {
+            display: inline-flex; align-items: center; padding: 3px 8px; border-radius: var(--radius-sm);
+            border: 1px solid color-mix(in srgb, var(--accent-blue) 45%, transparent);
+            background: color-mix(in srgb, var(--accent-blue) 16%, transparent); color: var(--white);
+            font-size: 0.75rem; font-weight: 600;
+        }
+
+        main { padding-bottom: 96px; }
+
+        /* Notices (owner confirmation, empty state, errors) */
+        .notice {
+            display: flex; gap: 14px; align-items: flex-start; margin-bottom: 24px; padding: 18px 20px;
+            border: 1px solid color-mix(in srgb, var(--accent) 35%, transparent); border-left-width: 3px;
+            border-radius: var(--radius-lg); background: color-mix(in srgb, var(--accent) 8%, transparent);
+        }
+        .notice:focus { outline: none; } /* focused only so screen readers announce it */
+        .notice.is-error { --accent: var(--error); }
+        .notice.is-info { --accent: var(--gray-500); }
+        .notice-icon { width: 22px; height: 22px; flex-shrink: 0; margin-top: 1px; color: var(--accent); }
+        .notice-title { font-weight: 700; }
+        .notice-text { color: var(--gray-300); font-size: 0.92rem; margin-top: 2px; }
+        .notice .btn { margin-top: 12px; }
+
+        /* Toolbar: one filter row above everything it scopes */
+        .toolbar { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px 24px; margin-bottom: 24px; }
+        .range {
+            display: grid; grid-template-columns: repeat(4, auto); gap: 2px; padding: 3px;
+            border: 1px solid rgba(255,255,255,0.1); border-radius: var(--radius-md); background: var(--black-light);
+        }
+        .range button {
+            padding: 8px 14px; border: 0; border-radius: var(--radius-sm); background: transparent; cursor: pointer;
+            color: var(--gray-400); font-size: 0.85rem; font-weight: 600; white-space: nowrap;
+            transition: background 0.2s ease, color 0.2s ease;
+        }
+        .range button:hover { color: var(--white); background: rgba(255,255,255,0.04); }
+        .range button[aria-pressed="true"] { color: var(--white); background: rgba(16,185,129,0.16); box-shadow: inset 0 0 0 1px rgba(16,185,129,0.45); }
+        @media (max-width: 419px) {
+            .range { width: 100%; grid-template-columns: repeat(4, 1fr); }
+            .range button { padding: 8px 4px; font-size: 0.8rem; }
+        }
+        @media (max-width: 359px) { .range { grid-template-columns: repeat(2, 1fr); } }
+        .updated { color: var(--gray-400); font-size: 0.82rem; }
+
+        /* Loading */
+        .loading { display: flex; align-items: center; justify-content: center; gap: 14px; min-height: 320px; color: var(--gray-400); }
+        .loading-bars { display: flex; align-items: flex-end; gap: 3px; height: 18px; }
+        .loading-bars i { width: 4px; height: 100%; border-radius: 1px; background: var(--green-primary); animation: pulse 1s var(--ease) infinite; transform-origin: bottom; }
+        .loading-bars i:nth-child(2) { animation-delay: 0.15s; }
+        .loading-bars i:nth-child(3) { animation-delay: 0.3s; }
+        @keyframes pulse { 0%, 100% { transform: scaleY(0.35); } 50% { transform: scaleY(1); } }
+
+        #content { transition: opacity 0.25s ease; }
+        #content.is-busy { opacity: 0.55; }
+
+        /* Stat tiles */
+        .tiles { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; margin-bottom: 20px; }
+        @media (min-width: 900px) { .tiles { grid-template-columns: repeat(4, 1fr); gap: 16px; } }
+        .tile { padding: 20px; border: 1px solid var(--line); border-radius: var(--radius-lg); background: rgba(255,255,255,0.02); min-width: 0; }
+        .tile-label { color: var(--gray-300); font-size: 0.85rem; font-weight: 600; }
+        .tile-value { margin-top: 6px; font-size: clamp(1.7rem, 4vw, 2.35rem); font-weight: 800; letter-spacing: -0.03em; line-height: 1.1; overflow-wrap: anywhere; }
+        .tile-sub { margin-top: 6px; color: var(--gray-400); font-size: 0.8rem; line-height: 1.4; }
+        .tile.is-key { border-color: rgba(16,185,129,0.3); background: linear-gradient(145deg, rgba(16,185,129,0.08), rgba(16,185,129,0.01)); }
+        @media (max-width: 419px) { .tile { padding: 16px 14px; } }
+
+        /* Cards */
+        .card { padding: 24px; border: 1px solid var(--line); border-radius: var(--radius-lg); background: var(--black-light); min-width: 0; }
+        @media (max-width: 599px) { .card { padding: 20px 16px; } }
+        .card + .card, .card + .grid-3 { margin-top: 20px; }
+        .card-head { display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 8px 24px; margin-bottom: 16px; }
+        .card-title { font-size: 1.1rem; font-weight: 700; letter-spacing: -0.02em; }
+        .card-sub { color: var(--gray-400); font-size: 0.85rem; }
+        .legend { display: flex; flex-wrap: wrap; gap: 6px 18px; list-style: none; color: var(--gray-300); font-size: 0.85rem; }
+        .legend li { display: flex; align-items: center; gap: 8px; }
+        .key { display: inline-block; width: 16px; height: 2px; border-radius: 1px; background: var(--k); }
+
+        /* Charts */
+        .chart { position: relative; outline: none; border-radius: var(--radius-sm); touch-action: pan-y; }
+        .chart:focus-visible { box-shadow: 0 0 0 2px var(--black-light), 0 0 0 4px var(--green-primary); }
+        .chart svg { display: block; width: 100%; overflow: visible; }
+        .chart .grid { stroke: var(--chart-grid); stroke-width: 1; shape-rendering: crispEdges; }
+        .chart .axis { stroke: var(--chart-axis); stroke-width: 1; shape-rendering: crispEdges; }
+        .chart .tick { fill: var(--gray-400); font-size: 11px; font-variant-numeric: tabular-nums; }
+        .chart .value-label { fill: var(--gray-300); font-size: 11px; font-weight: 600; font-variant-numeric: tabular-nums; }
+        .chart .line { fill: none; stroke-width: 2; stroke-linejoin: round; stroke-linecap: round; }
+        .chart .line-visits { stroke: var(--series-visits); }
+        .chart .line-downloads { stroke: var(--series-downloads); }
+        .chart .dot { stroke: var(--black-light); stroke-width: 2; }
+        .chart .dot-visits { fill: var(--series-visits); }
+        .chart .dot-downloads { fill: var(--series-downloads); }
+        .chart .crosshair { stroke: rgba(255,255,255,0.32); stroke-width: 1; shape-rendering: crispEdges; }
+        .chart .bar { fill: var(--series-visits); }
+        .chart .bar.is-active { fill: var(--series-visits-hover); }
+        .chart .band.is-active { fill: rgba(255,255,255,0.035); }
+        .chart-hint { margin-top: 10px; color: var(--gray-400); font-size: 0.78rem; }
+
+        .tooltip {
+            position: absolute; top: 0; left: 0; z-index: 5; pointer-events: none; min-width: 168px;
+            padding: 10px 12px; border: 1px solid rgba(255,255,255,0.12); border-radius: var(--radius-md);
+            background: rgba(22,22,22,0.97); box-shadow: 0 16px 40px rgba(0,0,0,0.55); font-size: 0.82rem; line-height: 1.5;
+        }
+        .tip-title { color: var(--gray-400); font-size: 0.76rem; font-weight: 500; margin-bottom: 4px; white-space: nowrap; }
+        .tip-row { display: flex; align-items: center; gap: 8px; white-space: nowrap; }
+        .tip-row b { min-width: 2.6ch; color: var(--white); font-weight: 700; font-variant-numeric: tabular-nums; }
+        .tip-row span { color: var(--gray-400); }
+        .tip-row .key { width: 12px; }
+        .tip-row .key.is-none { background: transparent; }
+
+        /* Table view (the accessible twin of each chart) */
+        .table-view { margin-top: 14px; border-top: 1px solid var(--line); padding-top: 12px; }
+        .table-view summary { cursor: pointer; width: max-content; max-width: 100%; color: var(--gray-400); font-size: 0.85rem; font-weight: 600; border-radius: var(--radius-sm); }
+        .table-view summary:hover { color: var(--white); }
+        .table-wrap { margin-top: 12px; max-height: 360px; overflow: auto; border: 1px solid var(--line); border-radius: var(--radius-md); }
+        table { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
+        th, td { padding: 8px 12px; text-align: right; white-space: nowrap; border-bottom: 1px solid var(--line); font-variant-numeric: tabular-nums; }
+        th:first-child, td:first-child { text-align: left; }
+        thead th { position: sticky; top: 0; background: var(--black-medium); color: var(--gray-300); font-weight: 600; white-space: normal; vertical-align: bottom; }
+        @media (max-width: 599px) { th, td { padding: 8px 10px; } }
+        tbody td { color: var(--gray-300); }
+        tbody tr:last-child td { border-bottom: 0; }
+
+        /* Breakdowns: ranked horizontal bars */
+        .grid-3 { display: grid; gap: 20px; }
+        @media (min-width: 768px) { .grid-3 { grid-template-columns: repeat(2, 1fr); } .grid-3 > :last-child { grid-column: 1 / -1; } }
+        @media (min-width: 1100px) { .grid-3 { grid-template-columns: repeat(3, 1fr); } .grid-3 > :last-child { grid-column: auto; } }
+        .grid-3 .card + .card { margin-top: 0; }
+        .meters { list-style: none; display: flex; flex-direction: column; gap: 14px; }
+        .meter-head { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; margin-bottom: 6px; font-size: 0.9rem; }
+        .meter-name { color: var(--gray-300); min-width: 0; overflow-wrap: anywhere; }
+        .meter-value { color: var(--white); font-weight: 600; font-variant-numeric: tabular-nums; white-space: nowrap; }
+        .meter-value span { color: var(--gray-400); font-weight: 500; margin-left: 6px; }
+        .meter-bar { height: 6px; border-radius: 2px; background: rgba(255,255,255,0.06); overflow: hidden; }
+        .meter-bar i { display: block; height: 100%; min-width: 2px; border-radius: 2px; background: linear-gradient(90deg, var(--green-dark), var(--green-primary)); }
+        .meters-empty { color: var(--gray-400); font-size: 0.9rem; }
+
+        /* How counting works + per-browser opt-out */
+        .privacy { margin-top: 20px; display: grid; gap: 28px; }
+        @media (min-width: 900px) { .privacy { grid-template-columns: 1.5fr 1fr; gap: 48px; padding: 32px; } }
+        .privacy h2 { font-size: 1.1rem; font-weight: 700; letter-spacing: -0.02em; margin-bottom: 10px; }
+        .privacy p { color: var(--gray-400); font-size: 0.92rem; }
+        .how-list { list-style: none; display: flex; flex-direction: column; gap: 10px; margin-top: 14px; }
+        .how-list li { position: relative; padding-left: 20px; color: var(--gray-300); font-size: 0.92rem; line-height: 1.6; }
+        .how-list li::before { content: ''; position: absolute; left: 2px; top: 0.68em; width: 6px; height: 6px; border-radius: 1px; background: var(--green-primary); }
+        .owner-box { align-self: start; padding: 22px; border: 1px solid rgba(255,255,255,0.08); border-radius: var(--radius-lg); background: var(--black-medium); }
+        .switch { display: flex; align-items: center; gap: 14px; margin-top: 16px; cursor: pointer; font-weight: 600; font-size: 0.95rem; line-height: 1.4; }
+        .switch input {
+            appearance: none; -webkit-appearance: none; position: relative; flex-shrink: 0; width: 44px; height: 24px; margin: 0;
+            border: 1px solid rgba(255,255,255,0.16); border-radius: var(--radius-sm); background: var(--gray-800); cursor: pointer;
+            transition: background 0.2s ease, border-color 0.2s ease;
+        }
+        .switch input::before {
+            content: ''; position: absolute; top: 3px; left: 3px; width: 16px; height: 16px; border-radius: 2px;
+            background: var(--gray-400); transition: transform 0.2s var(--ease), background 0.2s ease;
+        }
+        .switch input:checked { background: var(--green-dark); border-color: var(--green-primary); }
+        .switch input:checked::before { transform: translateX(20px); background: var(--white); }
+        .switch input:focus-visible { outline: 2px solid var(--green-primary); outline-offset: 3px; }
+        .switch input:disabled { opacity: 0.6; cursor: progress; }
+        .owner-status { display: flex; align-items: flex-start; gap: 10px; margin-top: 14px; color: var(--gray-300); font-size: 0.88rem; line-height: 1.5; }
+        .owner-status::before { content: ''; width: 8px; height: 8px; margin-top: 0.4em; flex-shrink: 0; border-radius: 2px; background: var(--gray-500); }
+        .owner-status[data-state="counted"]::before { background: var(--green-primary); }
+        .owner-status[data-state="excluded"]::before { background: var(--gray-400); }
+        .owner-status[data-state="error"]::before { background: var(--error); }
+
+        /* Footer */
+        footer { padding: 40px 0; border-top: 1px solid rgba(255,255,255,0.05); background: var(--black-light); }
+        .footer-content { display: flex; flex-direction: column; gap: 16px; align-items: center; text-align: center; }
+        @media (min-width: 768px) { .footer-content { flex-direction: row; justify-content: space-between; text-align: left; } }
+        .footer-links { display: flex; flex-wrap: wrap; justify-content: center; gap: 24px; list-style: none; }
+        .footer-links a { color: var(--gray-400); text-decoration: none; font-size: 0.88rem; }
+        .footer-links a:hover { color: var(--white); }
+        .footer-copy { color: var(--gray-400); font-size: 0.85rem; }
+
+        [hidden] { display: none !important; }
+
+        @media (prefers-reduced-motion: reduce) {
+            .reveal { opacity: 1; transform: none; transition: none; }
+            .loading-bars i { animation: none; transform: scaleY(0.7); }
+            #content, .switch input, .switch input::before, .btn, .range button { transition: none; }
+        }
+    </style>
+</head>
+<body>
+    <nav id="navbar">
+        <div class="container nav-content">
+            <a href="/" class="logo" data-home>Yunus Seven<span>.</span></a>
+            <a href="/" class="btn btn-secondary btn-sm" data-home>
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18"/></svg>
+                Back to CV
+            </a>
+        </div>
+    </nav>
+
+    <main>
+        <header class="page-head">
+            <div class="container reveal">
+                <span class="section-tag">Traffic</span>
+                <h1 class="page-title">Site traffic</h1>
+                <p class="page-lead">How often this CV has been viewed, how many people downloaded it, and where visitors came from. Counting is anonymous.</p>
+                <p class="page-meta" id="pageMeta"></p>
+            </div>
+        </header>
+
+        <div class="container">
+            <div class="notice" id="ownerNotice" role="status" tabindex="-1" hidden>
+                <svg class="notice-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                <div><p class="notice-title"></p><p class="notice-text"></p></div>
+            </div>
+
+            <div class="toolbar reveal">
+                <div class="range" role="group" aria-label="Date range">
+                    <button type="button" data-range="30d" aria-pressed="true">30 days</button>
+                    <button type="button" data-range="90d" aria-pressed="false">90 days</button>
+                    <button type="button" data-range="12m" aria-pressed="false">12 months</button>
+                    <button type="button" data-range="all" aria-pressed="false">All time</button>
+                </div>
+                <p class="updated" id="updated"></p>
+            </div>
+
+            <div class="loading" id="loading" role="status">
+                <span class="loading-bars" aria-hidden="true"><i></i><i></i><i></i></span>
+                Loading traffic data…
+            </div>
+
+            <div class="notice is-error" id="errorBox" role="alert" hidden>
+                <svg class="notice-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/></svg>
+                <div>
+                    <p class="notice-title">Couldn't load the traffic data</p>
+                    <p class="notice-text" id="errorText">The stats service didn't respond. Please try again in a moment.</p>
+                    <button type="button" class="btn btn-secondary btn-sm" id="retry">Try again</button>
+                </div>
+            </div>
+
+            <div id="content" hidden>
+                <div class="notice is-info" id="emptyBox" hidden>
+                    <svg class="notice-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                    <div><p class="notice-title" id="emptyTitle"></p><p class="notice-text" id="emptyText"></p></div>
+                </div>
+
+                <section class="tiles reveal" aria-label="Summary">
+                    <div class="tile">
+                        <p class="tile-label">Visits</p>
+                        <p class="tile-value" id="tVisits">0</p>
+                        <p class="tile-sub" data-range-label>Past 30 days</p>
+                    </div>
+                    <div class="tile">
+                        <p class="tile-label">Visitors</p>
+                        <p class="tile-value" id="tVisitors">0</p>
+                        <p class="tile-sub">Daily visitors, summed</p>
+                    </div>
+                    <div class="tile">
+                        <p class="tile-label">CV downloads</p>
+                        <p class="tile-value" id="tDownloads">0</p>
+                        <p class="tile-sub" data-range-label>Past 30 days</p>
+                    </div>
+                    <div class="tile is-key">
+                        <p class="tile-label">Last 30 days</p>
+                        <p class="tile-value" id="tLast30">0</p>
+                        <p class="tile-sub">Visits, refreshed every minute</p>
+                    </div>
+                </section>
+
+                <section class="card reveal" aria-labelledby="dailyTitle">
+                    <div class="card-head">
+                        <div>
+                            <h2 class="card-title" id="dailyTitle">Daily visits</h2>
+                            <p class="card-sub"><span data-range-label>Past 30 days</span> · UK time</p>
+                        </div>
+                        <ul class="legend" aria-label="Legend">
+                            <li><i class="key" style="--k: var(--series-visits)"></i>Visits</li>
+                            <li><i class="key" style="--k: var(--series-downloads)"></i>CV downloads</li>
+                        </ul>
+                    </div>
+                    <div class="chart" id="dailyChart" tabindex="0" role="group" aria-label="Daily visits and CV downloads chart" aria-describedby="dailyHint">
+                        <svg aria-hidden="true" focusable="false"></svg>
+                        <div class="tooltip" hidden></div>
+                    </div>
+                    <p class="chart-hint" id="dailyHint">Hover over the chart, or focus it and use the arrow keys, to read each day.</p>
+                    <p class="sr-only" aria-live="polite" id="dailyLive"></p>
+                    <details class="table-view">
+                        <summary>Show the daily numbers as a table</summary>
+                        <div class="table-wrap">
+                            <table>
+                                <caption class="sr-only">Daily visits, visitors and CV downloads, newest first</caption>
+                                <thead><tr><th scope="col">Date</th><th scope="col">Visits</th><th scope="col">Visitors</th><th scope="col">CV downloads</th></tr></thead>
+                                <tbody id="dailyTable"></tbody>
+                            </table>
+                        </div>
+                    </details>
+                </section>
+
+                <section class="card reveal" aria-labelledby="monthlyTitle">
+                    <div class="card-head">
+                        <div>
+                            <h2 class="card-title" id="monthlyTitle">Visits per month</h2>
+                            <p class="card-sub" id="monthlySub">All time</p>
+                        </div>
+                    </div>
+                    <div class="chart" id="monthlyChart" tabindex="0" role="group" aria-label="Visits per month chart" aria-describedby="monthlyHint">
+                        <svg aria-hidden="true" focusable="false"></svg>
+                        <div class="tooltip" hidden></div>
+                    </div>
+                    <p class="chart-hint" id="monthlyHint">Hover over a month, or focus the chart and use the arrow keys.</p>
+                    <p class="sr-only" aria-live="polite" id="monthlyLive"></p>
+                    <details class="table-view">
+                        <summary>Show the monthly numbers as a table</summary>
+                        <div class="table-wrap">
+                            <table>
+                                <caption class="sr-only">Monthly visits, visitors and CV downloads, newest first</caption>
+                                <thead><tr><th scope="col">Month</th><th scope="col">Visits</th><th scope="col">Visitors (daily, summed)</th><th scope="col">CV downloads</th></tr></thead>
+                                <tbody id="monthlyTable"></tbody>
+                            </table>
+                        </div>
+                    </details>
+                </section>
+
+                <div class="grid-3">
+                    <section class="card reveal" aria-labelledby="sourcesTitle">
+                        <div class="card-head">
+                            <div>
+                                <h2 class="card-title" id="sourcesTitle">Where visitors came from</h2>
+                                <p class="card-sub" data-range-label>Past 30 days</p>
+                            </div>
+                        </div>
+                        <ul class="meters" id="sourcesList"></ul>
+                    </section>
+                    <section class="card reveal reveal-delay-1" aria-labelledby="countriesTitle">
+                        <div class="card-head">
+                            <div>
+                                <h2 class="card-title" id="countriesTitle">Countries</h2>
+                                <p class="card-sub" data-range-label>Past 30 days</p>
+                            </div>
+                        </div>
+                        <ul class="meters" id="countriesList"></ul>
+                    </section>
+                    <section class="card reveal reveal-delay-2" aria-labelledby="devicesTitle">
+                        <div class="card-head">
+                            <div>
+                                <h2 class="card-title" id="devicesTitle">Devices</h2>
+                                <p class="card-sub" data-range-label>Past 30 days</p>
+                            </div>
+                        </div>
+                        <ul class="meters" id="devicesList"></ul>
+                    </section>
+                </div>
+            </div>
+
+            <section class="card privacy reveal" id="how" aria-labelledby="howTitle">
+                <div>
+                    <h2 id="howTitle">How counting works</h2>
+                    <p>The numbers are anonymous. Visitors get no cookies, there are no third-party analytics, and nothing follows anyone to other sites.</p>
+                    <ul class="how-list">
+                        <li>A visit is one load of the CV page. Reloading it, or coming back within 30 minutes, doesn't count again.</li>
+                        <li>CV downloads are clicks on Download CV, with the same 30-minute rule.</li>
+                        <li>Visitors are counted day by day, so someone who visits on three different days counts three times in the visitor total.</li>
+                        <li>No IP addresses or browser details are stored. To spot repeat visits, the server keeps a scrambled code made with a random key that changes every day, and deletes both within 48 hours.</li>
+                        <li>All that's kept for each visit is the country, the type of device, and the kind of site the visitor came from (such as LinkedIn or a search engine), never the page itself.</li>
+                        <li>Bots, crawlers and link previews aren't counted. Days follow UK time.</li>
+                    </ul>
+                </div>
+                <div class="owner-box">
+                    <h2>Your own visits</h2>
+                    <p>Switch this on so your own visits don't inflate the numbers. It saves a cookie and a small flag on this browser only, which is the only time this site stores anything.</p>
+                    <label class="switch" for="ownerToggle">
+                        <input type="checkbox" role="switch" id="ownerToggle" aria-describedby="ownerStatus">
+                        <span>Don't count my visits on this browser</span>
+                    </label>
+                    <p class="owner-status" id="ownerStatus" data-state="unknown" aria-live="polite">Checking this browser…</p>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <footer>
+        <div class="container footer-content">
+            <a href="/" class="logo" data-home>Yunus Seven<span>.</span></a>
+            <ul class="footer-links">
+                <li><a href="/" data-home>CV</a></li>
+                <li><a href="#how">How counting works</a></li>
+                <li><a href="https://www.linkedin.com/in/yunus-seven/" target="_blank" rel="noopener">LinkedIn</a></li>
+            </ul>
+            <p class="footer-copy">&copy; 2026 Yunus Seven</p>
+        </div>
+    </footer>
+
+    <script>
+    (() => {
+        'use strict';
+
+        // ---------------------------------------------------------------- setup
+        const $ = id => document.getElementById(id);
+        const params = new URLSearchParams(location.search);
+        const TEST = params.get('ns') === 'test';
+        const api = path => TEST ? path + (path.includes('?') ? '&' : '?') + 'ns=test' : path;
+        const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+        const RANGES = { '30d': 'Past 30 days', '90d': 'Past 90 days', '12m': 'Past 12 months', 'all': 'All time' };
+        const PHRASES = { '30d': 'the last 30 days', '90d': 'the last 90 days', '12m': 'the last 12 months', 'all': 'all-time data' };
+        const SOURCES = ['Direct', 'LinkedIn', 'Search engines', 'Email & messaging', 'Job sites', 'Other websites'];
+        const DEVICES = { desktop: 'Desktop', mobile: 'Mobile', tablet: 'Tablet' };
+
+        const fmt = new Intl.NumberFormat('en-GB');
+        const fmtCompact = new Intl.NumberFormat('en-GB', { notation: 'compact', maximumFractionDigits: 1 });
+        const fmtPct = new Intl.NumberFormat('en-GB', { style: 'percent', maximumFractionDigits: 0 });
+        const dayShort = new Intl.DateTimeFormat('en-GB', { day: 'numeric', month: 'short', timeZone: 'UTC' });
+        const dayFull = new Intl.DateTimeFormat('en-GB', { weekday: 'short', day: 'numeric', month: 'short', year: 'numeric', timeZone: 'UTC' });
+        const dayLong = new Intl.DateTimeFormat('en-GB', { day: 'numeric', month: 'long', year: 'numeric', timeZone: 'UTC' });
+        const monthShort = new Intl.DateTimeFormat('en-GB', { month: 'short', timeZone: 'UTC' });
+        const monthYearShort = new Intl.DateTimeFormat('en-GB', { month: 'short', year: 'numeric', timeZone: 'UTC' });
+        const monthLong = new Intl.DateTimeFormat('en-GB', { month: 'long', year: 'numeric', timeZone: 'UTC' });
+        const timeUk = new Intl.DateTimeFormat('en-GB', { hour: '2-digit', minute: '2-digit', timeZone: 'Europe/London' });
+        let regionNames = null;
+        try { regionNames = new Intl.DisplayNames(['en-GB'], { type: 'region' }); } catch (e) { /* older browsers: show codes */ }
+
+        const asDate = ymd => new Date(Date.UTC(+ymd.slice(0, 4), +ymd.slice(5, 7) - 1, +(ymd.slice(8, 10) || 1)));
+        const londonToday = () => {
+            const p = {};
+            new Intl.DateTimeFormat('en-GB', { timeZone: 'Europe/London', year: 'numeric', month: '2-digit', day: '2-digit' })
+                .formatToParts(new Date()).forEach(x => { p[x.type] = x.value; });
+            return `${p.year}-${p.month}-${p.day}`;
+        };
+        const countryName = code => {
+            if (code === 'XX') return 'Unknown';
+            try { return (regionNames && regionNames.of(code)) || code; } catch (e) { return code; }
+        };
+        const pct = (n, total) => total > 0 ? (n / total < 0.005 && n > 0 ? '<1%' : fmtPct.format(n / total)) : '0%';
+        const has = (obj, key) => Object.prototype.hasOwnProperty.call(obj, key); // not "toString" etc.
+
+        let range = has(RANGES, params.get('range')) ? params.get('range') : '30d';
+        let current = null;       // last data that rendered successfully
+        let failedRange = null;
+        let requestId = 0;
+        const cache = new Map();
+
+        // ---------------------------------------------------------------- data
+        async function fetchJson(url, options) {
+            const ctrl = new AbortController();
+            const timer = setTimeout(() => ctrl.abort(), 15000);
+            try {
+                const res = await fetch(url, Object.assign({ credentials: 'same-origin', headers: { Accept: 'application/json' }, signal: ctrl.signal }, options));
+                const data = await res.json().catch(() => null); // always drain the body, even on errors
+                if (!res.ok || !data) throw new Error('HTTP ' + res.status);
+                return data;
+            } finally {
+                clearTimeout(timer);
+            }
+        }
+
+        // Validate everything from the API before it reaches the page.
+        const count = v => (typeof v === 'number' && Number.isFinite(v) && v >= 0) ? Math.round(v) : 0;
+        const isDay = s => typeof s === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(s);
+        const isMonth = s => typeof s === 'string' && /^\d{4}-\d{2}$/.test(s);
+        const list = v => Array.isArray(v) ? v.filter(x => x && typeof x === 'object') : [];
+        function clean(d) {
+            if (!d || typeof d !== 'object' || !Array.isArray(d.daily) || !Array.isArray(d.monthly)) throw new Error('Unexpected response');
+            const triple = r => ({ visits: count(r.visits), visitors: count(r.visitors), downloads: count(r.downloads) });
+            const ranked = items => items.filter(x => x.visits > 0).sort((a, b) => b.visits - a.visits);
+            return {
+                range: has(RANGES, d.range) ? d.range : range,
+                trackingSince: isDay(d.trackingSince) ? d.trackingSince : null,
+                generatedAt: typeof d.generatedAt === 'string' && !isNaN(Date.parse(d.generatedAt)) ? new Date(d.generatedAt) : new Date(),
+                last30: { visits: count(d.last30 && d.last30.visits), downloads: count(d.last30 && d.last30.downloads) },
+                totals: triple(d.totals || {}),
+                daily: list(d.daily).filter(r => isDay(r.date)).map(r => Object.assign({ date: r.date }, triple(r))),
+                monthly: list(d.monthly).filter(r => isMonth(r.month)).map(r => Object.assign({ month: r.month }, triple(r))),
+                countries: ranked(list(d.countries).filter(r => typeof r.code === 'string' && /^[A-Z]{2}$/.test(r.code)).map(r => ({ code: r.code, visits: count(r.visits) }))),
+                sources: ranked(list(d.sources).filter(r => SOURCES.includes(r.source)).map(r => ({ source: r.source, visits: count(r.visits) }))),
+                devices: ranked(list(d.devices).filter(r => has(DEVICES, r.device)).map(r => ({ device: r.device, visits: count(r.visits) })))
+            };
+        }
+
+        async function load() {
+            const id = ++requestId;
+            const wanted = range;
+            $('content').classList.add('is-busy');
+            $('content').setAttribute('aria-busy', 'true');
+            try {
+                const data = cache.get(wanted) || clean(await fetchJson(api('/api/stats?range=' + wanted)));
+                cache.set(wanted, data);
+                if (id !== requestId) return;
+                current = data;
+                failedRange = null;
+                $('loading').hidden = true;
+                $('errorBox').hidden = true;
+                $('content').hidden = false;
+                render(data);
+            } catch (err) {
+                if (id !== requestId) return;
+                failedRange = wanted;
+                $('loading').hidden = true;
+                $('errorText').textContent = current
+                    ? `Couldn't load ${PHRASES[wanted]}, so the page still shows ${PHRASES[current.range]}. Please try again.`
+                    : "The stats service didn't respond. Please try again in a moment.";
+                $('errorBox').hidden = false;
+                if (current) { range = current.range; syncRange(); }
+            } finally {
+                if (id === requestId) {
+                    $('content').classList.remove('is-busy');
+                    $('content').removeAttribute('aria-busy');
+                }
+            }
+        }
+
+        // ---------------------------------------------------------------- range switcher
+        function syncRange() {
+            document.querySelectorAll('[data-range]').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.range === range)));
+            const q = new URLSearchParams();
+            if (TEST) q.set('ns', 'test');
+            if (range !== '30d') q.set('range', range);
+            const qs = q.toString();
+            history.replaceState(null, '', location.pathname + (qs ? '?' + qs : '') + location.hash);
+        }
+        document.querySelectorAll('[data-range]').forEach(b => b.addEventListener('click', () => {
+            if (b.dataset.range === range && current && current.range === range) return;
+            range = b.dataset.range;
+            syncRange();
+            load();
+        }));
+        $('retry').addEventListener('click', () => {
+            if (failedRange) range = failedRange;
+            syncRange();
+            $('errorBox').hidden = true;
+            if (!current) $('loading').hidden = false;
+            load();
+        });
+
+        // ---------------------------------------------------------------- rendering
+        function rangeLabel(d) {
+            if (d.range !== 'all') return RANGES[d.range];
+            return d.trackingSince ? 'Since ' + dayLong.format(asDate(d.trackingSince)) : 'All time';
+        }
+
+        function render(d) {
+            const label = rangeLabel(d);
+            document.querySelectorAll('[data-range-label]').forEach(el => { el.textContent = label; });
+
+            // Header meta: tracking start, test badge
+            const meta = $('pageMeta');
+            meta.replaceChildren();
+            if (TEST) {
+                const badge = document.createElement('span');
+                badge.className = 'test-badge';
+                badge.textContent = 'Test data (ns=test)';
+                meta.appendChild(badge);
+            }
+            const since = document.createElement('span');
+            since.textContent = d.trackingSince ? 'Counting since ' + dayLong.format(asDate(d.trackingSince)) : 'No visits counted yet';
+            meta.appendChild(since);
+            $('updated').textContent = 'Updated ' + timeUk.format(d.generatedAt) + ' UK time';
+
+            // Tiles
+            $('tVisits').textContent = fmt.format(d.totals.visits);
+            $('tVisitors').textContent = fmt.format(d.totals.visitors);
+            $('tDownloads').textContent = fmt.format(d.totals.downloads);
+            $('tLast30').textContent = fmt.format(d.last30.visits);
+
+            // Empty state
+            const empty = d.totals.visits === 0 && d.totals.downloads === 0;
+            $('emptyBox').hidden = !empty;
+            if (empty) {
+                const started = d.trackingSince || londonToday();
+                $('emptyTitle').textContent = d.trackingSince ? `No visits in this period (${label.toLowerCase()})` : 'No visits counted yet';
+                $('emptyText').textContent = `Counting started on ${dayLong.format(asDate(started))}. ` +
+                    (d.trackingSince ? 'Pick a longer range to see earlier visits.' : 'The charts fill in as people visit the CV.');
+            }
+
+            // Charts and their tables
+            charts.daily.rows = d.daily;
+            charts.monthly.rows = d.monthly;
+            charts.daily.active = null;
+            charts.monthly.active = null;
+            drawDaily();
+            drawMonthly();
+            const since2 = d.monthly.length ? monthYearShort.format(asDate(d.monthly[0].month)) : '';
+            $('monthlySub').textContent = d.monthly.length > 1 ? `All time, since ${since2}` : 'All time';
+            fillTable($('dailyTable'), d.daily.slice().reverse().map(r => [dayFull.format(asDate(r.date)), r.visits, r.visitors, r.downloads]));
+            fillTable($('monthlyTable'), d.monthly.slice().reverse().map(r => [monthLong.format(asDate(r.month)), r.visits, r.visitors, r.downloads]));
+
+            // Breakdowns
+            renderMeters($('sourcesList'), d.sources.map(s => ({ name: s.source, visits: s.visits })));
+            let countries = d.countries.map(c => ({ name: countryName(c.code), visits: c.visits }));
+            if (countries.length > 8) {
+                const rest = countries.slice(7);
+                countries = countries.slice(0, 7).concat({ name: `Other countries (${rest.length})`, visits: rest.reduce((s, c) => s + c.visits, 0) });
+            }
+            renderMeters($('countriesList'), countries);
+            renderMeters($('devicesList'), d.devices.map(x => ({ name: DEVICES[x.device], visits: x.visits })));
+        }
+
+        function fillTable(tbody, rows) {
+            tbody.replaceChildren(...rows.map(cells => {
+                const tr = document.createElement('tr');
+                cells.forEach((c, i) => {
+                    const cell = document.createElement(i === 0 ? 'th' : 'td');
+                    if (i === 0) cell.scope = 'row';
+                    cell.textContent = typeof c === 'number' ? fmt.format(c) : c;
+                    tr.appendChild(cell);
+                });
+                return tr;
+            }));
+        }
+
+        function renderMeters(ul, items) {
+            ul.replaceChildren();
+            const total = items.reduce((s, x) => s + x.visits, 0);
+            if (!items.length || !total) {
+                const li = document.createElement('li');
+                li.className = 'meters-empty';
+                li.textContent = 'No visits in this period yet.';
+                ul.appendChild(li);
+                return;
+            }
+            items.forEach(item => {
+                const li = document.createElement('li');
+                const head = document.createElement('div');
+                head.className = 'meter-head';
+                const name = document.createElement('span');
+                name.className = 'meter-name';
+                name.textContent = item.name;
+                const value = document.createElement('span');
+                value.className = 'meter-value';
+                value.textContent = fmt.format(item.visits);
+                const share = document.createElement('span');
+                share.textContent = pct(item.visits, total);
+                value.appendChild(share);
+                head.append(name, value);
+                const bar = document.createElement('div');
+                bar.className = 'meter-bar';
+                bar.setAttribute('aria-hidden', 'true');
+                const fill = document.createElement('i');
+                fill.style.width = (item.visits / total * 100).toFixed(2) + '%';
+                bar.appendChild(fill);
+                li.append(head, bar);
+                ul.appendChild(li);
+            });
+        }
+
+        // ---------------------------------------------------------------- charts (inline SVG)
+        const SVG_NS = 'http://www.w3.org/2000/svg';
+        function svgEl(tag, attrs, parent) {
+            const node = document.createElementNS(SVG_NS, tag);
+            for (const k in attrs) node.setAttribute(k, attrs[k]);
+            if (parent) parent.appendChild(node);
+            return node;
+        }
+        function niceScale(peak) {
+            if (!(peak > 4)) return { max: 4, step: 1 };
+            const rough = peak / 4;
+            const pow = Math.pow(10, Math.floor(Math.log10(rough)));
+            const step = [1, 2, 5, 10].map(m => m * pow).find(s => s >= rough);
+            return { max: Math.ceil(peak / step) * step, step };
+        }
+        function yAxis(svg, peak, left, width, top, plotH) {
+            const { max, step } = niceScale(peak);
+            const label = max >= 10000 ? v => fmtCompact.format(v) : v => fmt.format(v);
+            for (let v = 0; v <= max; v += step) {
+                const y = Math.round(top + plotH - v / max * plotH) + 0.5;
+                svgEl('line', { x1: left, x2: left + width, y1: y, y2: y, class: v === 0 ? 'axis' : 'grid' }, svg);
+                svgEl('text', { x: left - 10, y: y + 4, class: 'tick', 'text-anchor': 'end' }, svg).textContent = label(v);
+            }
+            return max;
+        }
+        function leftMargin(peak) {
+            const { max } = niceScale(peak);
+            const longest = max >= 10000 ? fmtCompact.format(max) : fmt.format(max);
+            return Math.ceil(longest.length * 6.6) + 16;
+        }
+        function xLabel(svg, text, cx, y, W) {
+            const half = text.length * 3.3 + 2;
+            const x = Math.min(Math.max(cx, half), W - half);
+            svgEl('text', { x, y, class: 'tick', 'text-anchor': 'middle' }, svg).textContent = text;
+        }
+        function sizeSvg(svg, W, H) {
+            svg.replaceChildren();
+            svg.setAttribute('viewBox', `0 0 ${W} ${H}`);
+            svg.setAttribute('width', W);
+            svg.setAttribute('height', H);
+        }
+
+        const charts = {
+            daily: { host: $('dailyChart'), live: $('dailyLive'), rows: [], active: null, width: 0, model: null },
+            monthly: { host: $('monthlyChart'), live: $('monthlyLive'), rows: [], active: null, width: 0, model: null }
+        };
+
+        function drawDaily() {
+            const c = charts.daily, rows = c.rows, host = c.host, svg = host.querySelector('svg');
+            const W = Math.floor(host.clientWidth);
+            if (!W) return;
+            c.width = W;
+            const H = W < 560 ? 230 : 290;
+            const peak = rows.reduce((m, r) => Math.max(m, r.visits, r.downloads), 0);
+            const left = leftMargin(peak), right = 12, top = 14, bottom = 30;
+            const pw = Math.max(20, W - left - right), ph = H - top - bottom;
+            const n = rows.length;
+            sizeSvg(svg, W, H);
+            const max = yAxis(svg, peak, left, pw, top, ph);
+            const x = i => left + (n <= 1 ? pw / 2 : i * pw / (n - 1));
+            const y = v => top + ph - v / max * ph;
+
+            // X axis: days for short ranges, month starts for long ones
+            const maxLabels = Math.max(2, Math.floor(pw / 72));
+            let ticks = [];
+            if (n === 1) ticks = [0];
+            else if (n <= 120) {
+                const step = [1, 2, 7, 14, 21, 28].find(s => Math.floor((n - 1) / s) + 1 <= maxLabels) || Math.ceil(n / maxLabels);
+                for (let i = n - 1; i >= 0; i -= step) ticks.unshift(i);
+            } else {
+                const starts = [];
+                rows.forEach((r, i) => { if (r.date.endsWith('-01')) starts.push(i); });
+                const k = [1, 2, 3, 4, 6, 12, 24].find(s => Math.ceil(starts.length / s) <= maxLabels) || 24;
+                ticks = starts.filter(i => (+rows[i].date.slice(5, 7) - 1) % k === 0);
+            }
+            ticks.forEach((i, j) => {
+                const date = asDate(rows[i].date);
+                const text = n <= 120 ? dayShort.format(date)
+                    : (j === 0 || rows[i].date.slice(5, 7) === '01') ? monthYearShort.format(date) : monthShort.format(date);
+                xLabel(svg, text, x(i), H - 8, W);
+            });
+
+            // Series: visits as a soft area + 2px line, downloads as a 2px line
+            if (n > 1) {
+                const defs = svgEl('defs', {}, svg);
+                const grad = svgEl('linearGradient', { id: 'visitsFill', x1: 0, y1: 0, x2: 0, y2: 1 }, defs);
+                svgEl('stop', { offset: '0%', 'stop-color': '#059669', 'stop-opacity': 0.26 }, grad);
+                svgEl('stop', { offset: '100%', 'stop-color': '#059669', 'stop-opacity': 0.02 }, grad);
+                let area = `M${x(0)},${y(0)}`, visits = '', downloads = '';
+                rows.forEach((r, i) => {
+                    area += `L${x(i)},${y(r.visits)}`;
+                    visits += `${i ? 'L' : 'M'}${x(i)},${y(r.visits)}`;
+                    downloads += `${i ? 'L' : 'M'}${x(i)},${y(r.downloads)}`;
+                });
+                area += `L${x(n - 1)},${y(0)}Z`;
+                svgEl('path', { d: area, fill: 'url(#visitsFill)' }, svg);
+                svgEl('path', { d: downloads, class: 'line line-downloads' }, svg);
+                svgEl('path', { d: visits, class: 'line line-visits' }, svg);
+            } else if (n === 1) {
+                svgEl('circle', { cx: x(0), cy: y(rows[0].downloads), r: 4, class: 'dot dot-downloads' }, svg);
+                svgEl('circle', { cx: x(0), cy: y(rows[0].visits), r: 4, class: 'dot dot-visits' }, svg);
+            }
+
+            // Hover layer: crosshair snaps to the nearest day, one tooltip lists every series
+            const cross = svgEl('line', { y1: top, y2: top + ph, class: 'crosshair', visibility: 'hidden' }, svg);
+            const dotD = svgEl('circle', { r: 4, class: 'dot dot-downloads', visibility: 'hidden' }, svg);
+            const dotV = svgEl('circle', { r: 4, class: 'dot dot-visits', visibility: 'hidden' }, svg);
+            c.model = {
+                n,
+                indexAt: px => n <= 1 ? 0 : Math.max(0, Math.min(n - 1, Math.round((px - left) / pw * (n - 1)))),
+                show(i) {
+                    const r = rows[i], cx = Math.round(x(i)) + 0.5;
+                    cross.setAttribute('x1', cx); cross.setAttribute('x2', cx); cross.setAttribute('visibility', 'visible');
+                    dotV.setAttribute('cx', x(i)); dotV.setAttribute('cy', y(r.visits)); dotV.setAttribute('visibility', 'visible');
+                    dotD.setAttribute('cx', x(i)); dotD.setAttribute('cy', y(r.downloads)); dotD.setAttribute('visibility', 'visible');
+                    const title = dayFull.format(asDate(r.date)) + (i === n - 1 ? ' · today so far' : '');
+                    showTip(c, title, [
+                        [r.visits, r.visits === 1 ? 'visit' : 'visits', 'var(--series-visits)'],
+                        [r.visitors, r.visitors === 1 ? 'visitor' : 'visitors', null],
+                        [r.downloads, r.downloads === 1 ? 'CV download' : 'CV downloads', 'var(--series-downloads)']
+                    ], x(i), top, [[y(r.visits) - 6, y(r.visits) + 6], [y(r.downloads) - 6, y(r.downloads) + 6]]);
+                },
+                hide() { [cross, dotV, dotD].forEach(e => e.setAttribute('visibility', 'hidden')); }
+            };
+            restoreActive(c);
+        }
+
+        function barPath(x0, x1, yTop, yBase) {
+            const r = Math.min(4, (x1 - x0) / 2, yBase - yTop);
+            return `M${x0},${yBase}V${yTop + r}Q${x0},${yTop} ${x0 + r},${yTop}H${x1 - r}Q${x1},${yTop} ${x1},${yTop + r}V${yBase}Z`;
+        }
+
+        function drawMonthly() {
+            const c = charts.monthly, rows = c.rows, host = c.host, svg = host.querySelector('svg');
+            const W = Math.floor(host.clientWidth);
+            if (!W) return;
+            c.width = W;
+            const H = W < 560 ? 210 : 250;
+            const peak = rows.reduce((m, r) => Math.max(m, r.visits), 0);
+            const left = leftMargin(peak), right = 12, top = 22, bottom = 30;
+            const pw = Math.max(20, W - left - right), ph = H - top - bottom;
+            const m = rows.length;
+            sizeSvg(svg, W, H);
+            const max = yAxis(svg, peak, left, pw, top, ph);
+            const band = pw / Math.max(1, m);
+            const bw = Math.max(2, Math.min(24, band * 0.62));
+            const cx = i => left + band * (i + 0.5);
+            const y = v => top + ph - v / max * ph;
+            const base = top + ph;
+
+            const bands = [], bars = [];
+            rows.forEach((r, i) => {
+                bands.push(svgEl('rect', { x: left + band * i, y: top, width: band, height: ph, class: 'band', fill: 'transparent' }, svg));
+                bars.push(r.visits > 0 ? svgEl('path', { d: barPath(cx(i) - bw / 2, cx(i) + bw / 2, y(r.visits), base), class: 'bar' }, svg) : null);
+            });
+
+            // Direct label on the peak month only
+            const peakAt = peak > 0 ? rows.map(r => r.visits).lastIndexOf(peak) : -1;
+            if (peakAt >= 0) {
+                xLabel(svg, fmt.format(peak), cx(peakAt), y(peak) - 7, W);
+                svg.lastChild.setAttribute('class', 'value-label');
+            }
+
+            // Month labels, thinned to fit and anchored on the latest month
+            const maxLabels = Math.max(1, Math.floor(pw / 62));
+            const k = [1, 2, 3, 4, 6, 12, 24].find(s => Math.ceil(m / s) <= maxLabels) || 24;
+            let first = true;
+            rows.forEach((r, i) => {
+                if ((m - 1 - i) % k) return;
+                const date = asDate(r.month);
+                const text = first || r.month.endsWith('-01') ? monthYearShort.format(date) : monthShort.format(date);
+                first = false;
+                xLabel(svg, text, cx(i), H - 8, W);
+            });
+
+            c.model = {
+                n: m,
+                indexAt: px => Math.max(0, Math.min(m - 1, Math.floor((px - left) / band))),
+                show(i) {
+                    bands.forEach((b, j) => b.classList.toggle('is-active', j === i));
+                    bars.forEach((b, j) => b && b.classList.toggle('is-active', j === i));
+                    const r = rows[i];
+                    showTip(c, monthLong.format(asDate(r.month)) + (i === m - 1 ? ' · so far' : ''), [
+                        [r.visits, r.visits === 1 ? 'visit' : 'visits', 'var(--series-visits)'],
+                        [r.visitors, 'visitors (daily, summed)', null],
+                        [r.downloads, r.downloads === 1 ? 'CV download' : 'CV downloads', null]
+                    ], cx(i), Math.max(4, Math.min(y(r.visits) - 8, base - 90)),
+                    r.visits > 0 ? [[y(r.visits) - (i === peakAt ? 18 : 2), base]] : []); // the bar, and its label on the peak
+                },
+                hide() {
+                    bands.forEach(b => b.classList.remove('is-active'));
+                    bars.forEach(b => b && b.classList.remove('is-active'));
+                }
+            };
+            restoreActive(c);
+        }
+
+        // px, py: the tooltip's anchor beside the point; marks: the vertical spans [top, bottom] of
+        // what it describes at px (most important first), which it must not cover.
+        function showTip(c, title, rows, px, py, marks) {
+            const tip = c.host.querySelector('.tooltip');
+            const head = document.createElement('div');
+            head.className = 'tip-title';
+            head.textContent = title;
+            const lines = rows.map(([value, label, color]) => {
+                const row = document.createElement('div');
+                row.className = 'tip-row';
+                const key = document.createElement('i');
+                key.className = 'key' + (color ? '' : ' is-none');
+                if (color) key.style.setProperty('--k', color);
+                const b = document.createElement('b');
+                b.textContent = fmt.format(value);
+                const s = document.createElement('span');
+                s.textContent = label;
+                row.append(key, b, s);
+                return row;
+            });
+            tip.replaceChildren(head, ...lines);
+            tip.hidden = false;
+            const W = c.host.clientWidth, tw = tip.offsetWidth;
+            // Highest top that isn't under the fixed nav (chart coordinates; negative while the chart is lower down)
+            const minTop = document.getElementById('navbar').getBoundingClientRect().bottom + 6 - c.host.getBoundingClientRect().top;
+            let left = px + 14, top = py;
+            if (left + tw > W) left = px - 14 - tw;
+            if (left < 0) {
+                // No room beside the point (narrow charts): centre it above or below what it describes
+                left = Math.max(0, Math.min(W - tw, px - tw / 2));
+                top = clearOf(marks, tip.offsetHeight, c.host.clientHeight, py, minTop);
+            }
+            top = Math.max(top, minTop); // last resort: never hidden under the nav
+            tip.style.transform = `translate(${Math.round(left)}px, ${Math.round(top)}px)`;
+            c.live.dataset.text = `${title}: ` + rows.map(([v, l]) => `${fmt.format(v)} ${l}`).join(', ');
+        }
+
+        // Top for a tooltip of height th that overlaps the marks' column: just above or below all the
+        // marks, or else around the first one, whichever hides least and spills least outside the chart (height H).
+        // Anything above minTop would be under the fixed nav, which costs as much as hiding the point itself.
+        function clearOf(marks, th, H, fallback, minTop) {
+            if (!marks || !marks.length) return fallback;
+            const gap = 10;
+            const lo = Math.min(...marks.map(m => m[0])), hi = Math.max(...marks.map(m => m[1]));
+            const tops = [lo - gap - th, hi + gap];
+            marks.forEach(([a, b]) => tops.push(a - gap - th, b + gap));
+            const cost = t => marks.reduce((s, [a, b], i) => s + (t < b && t + th > a ? (i ? 60 : 1000) : 0), 0)
+                + Math.max(0, -t) + Math.max(0, t + th - H) + Math.max(0, minTop - t) * 100;
+            return tops.reduce((best, t) => cost(t) < cost(best) ? t : best);
+        }
+
+        function hideTip(c) {
+            c.host.querySelector('.tooltip').hidden = true;
+            if (c.model) c.model.hide();
+        }
+
+        function restoreActive(c) {
+            if (c.active != null && c.model && c.active < c.model.n) c.model.show(c.active);
+            else { c.active = null; c.host.querySelector('.tooltip').hidden = true; }
+        }
+
+        function bindChart(c, bigStep) {
+            const host = c.host;
+            const at = e => c.model.indexAt(e.clientX - host.getBoundingClientRect().left);
+            host.addEventListener('pointermove', e => {
+                if (!c.model || !c.model.n) return;
+                c.active = at(e);
+                c.model.show(c.active);
+            });
+            host.addEventListener('pointerdown', e => {
+                if (!c.model || !c.model.n || e.pointerType === 'mouse') return;
+                c.active = at(e);
+                c.model.show(c.active);
+            });
+            host.addEventListener('pointerleave', e => {
+                if (e.pointerType !== 'mouse' || document.activeElement === host) return;
+                c.active = null;
+                hideTip(c);
+            });
+            host.addEventListener('focus', () => {
+                if (!c.model || !c.model.n) return;
+                if (c.active == null) c.active = c.model.n - 1;
+                c.model.show(c.active);
+                c.live.textContent = c.live.dataset.text || '';
+            });
+            host.addEventListener('blur', () => { c.active = null; hideTip(c); });
+            host.addEventListener('keydown', e => {
+                if (!c.model || !c.model.n) return;
+                let i = c.active == null ? c.model.n - 1 : c.active;
+                if (e.key === 'ArrowLeft') i -= e.shiftKey ? bigStep : 1;
+                else if (e.key === 'ArrowRight') i += e.shiftKey ? bigStep : 1;
+                else if (e.key === 'Home') i = 0;
+                else if (e.key === 'End') i = c.model.n - 1;
+                else if (e.key === 'Escape') { hideTip(c); return; }
+                else return;
+                e.preventDefault();
+                c.active = Math.max(0, Math.min(c.model.n - 1, i));
+                c.model.show(c.active);
+                c.live.textContent = c.live.dataset.text || '';
+            });
+        }
+        bindChart(charts.daily, 7);
+        bindChart(charts.monthly, 12);
+
+        // Redraw when a chart's width changes (rotation, resize)
+        let resizeFrame = 0;
+        const redraw = () => {
+            cancelAnimationFrame(resizeFrame);
+            resizeFrame = requestAnimationFrame(() => {
+                if (!current) return;
+                if (Math.floor(charts.daily.host.clientWidth) !== charts.daily.width) drawDaily();
+                if (Math.floor(charts.monthly.host.clientWidth) !== charts.monthly.width) drawMonthly();
+            });
+        };
+        if ('ResizeObserver' in window) {
+            const ro = new ResizeObserver(redraw);
+            ro.observe(charts.daily.host);
+            ro.observe(charts.monthly.host);
+        } else {
+            window.addEventListener('resize', redraw);
+        }
+
+        // ---------------------------------------------------------------- this browser: counted or not
+        const ownerToggle = $('ownerToggle');
+        const ownerStatus = $('ownerStatus');
+        const lsGet = () => { try { return localStorage.getItem('ys_owner') === '1'; } catch (e) { return false; } };
+        const lsSet = on => { try { if (on) localStorage.setItem('ys_owner', '1'); else localStorage.removeItem('ys_owner'); } catch (e) { /* storage blocked */ } };
+        async function postOwner(exclude) {
+            const data = await fetchJson(api('/api/owner'), {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+                body: JSON.stringify({ exclude })
+            });
+            if (typeof data.excluded !== 'boolean') throw new Error('Unexpected response');
+            return data.excluded;
+        }
+        function setOwnerStatus(state, text) {
+            ownerStatus.dataset.state = state;
+            ownerStatus.textContent = text;
+            if (state === 'excluded') ownerToggle.checked = true;
+            if (state === 'counted') ownerToggle.checked = false;
+        }
+        const STATUS = {
+            counted: 'This browser is counted, like any other visitor.',
+            excluded: "This browser isn't counted. Your visits from it don't change any number."
+        };
+
+        // Exclude: set the local flag first, so the CV page sends "owner": true even if the server
+        // can't be reached now (the server then sets its cookie on the next visit).
+        // Include: clear the local flag only once the server has cleared its cookie.
+        async function applyOwner(exclude) {
+            if (exclude) lsSet(true);
+            let ok = false;
+            try { ok = (await postOwner(exclude)) === exclude; } catch (e) { ok = false; }
+            if (!exclude && ok) lsSet(false);
+            return ok;
+        }
+
+        function showOwnerNotice(kind, title, text) {
+            const box = $('ownerNotice');
+            box.classList.toggle('is-error', kind === 'error');
+            box.querySelector('.notice-title').textContent = title;
+            box.querySelector('.notice-text').textContent = text;
+            box.hidden = false;
+        }
+
+        async function initOwner() {
+            const action = params.get('owner');
+            if (action === 'exclude' || action === 'include') {
+                syncRange(); // drops ?owner=… from the address bar (keeps ns=test and range)
+                ownerToggle.disabled = true;
+                const exclude = action === 'exclude';
+                const ok = await applyOwner(exclude);
+                ownerToggle.disabled = false;
+                if (exclude) {
+                    setOwnerStatus('excluded', STATUS.excluded);
+                    showOwnerNotice('ok', 'Done: your visits on this browser are no longer counted.', ok
+                        ? 'This only applies to this browser. Open the same link on your other browsers and devices to exclude them too.'
+                        : "The server couldn't be reached just now, so the setting is saved on this browser and confirmed on your next visit to the CV.");
+                } else if (ok) {
+                    setOwnerStatus('counted', STATUS.counted);
+                    showOwnerNotice('ok', 'Done: this browser is counted again.', 'Visits from this browser now count like anyone else\'s.');
+                } else {
+                    setOwnerStatus('error', "Couldn't confirm this browser's setting with the server.");
+                    showOwnerNotice('error', "Couldn't switch counting back on", "The server didn't respond, so visits from this browser are still excluded. Please try the link again in a moment.");
+                }
+                $('ownerNotice').focus({ preventScroll: true });
+                return;
+            }
+            const local = lsGet();
+            let cookie = null;
+            try {
+                const data = await fetchJson(api('/api/owner'));
+                if (typeof data.excluded === 'boolean') cookie = data.excluded;
+            } catch (e) { cookie = null; }
+            if (cookie === true && !local) lsSet(true);                        // keep the backup flag in sync
+            if (cookie === false && local) postOwner(true).catch(() => {});    // restore the cookie from the backup
+            if (cookie === null && !local) setOwnerStatus('error', "Couldn't check this browser's setting right now.");
+            else setOwnerStatus((cookie || local) ? 'excluded' : 'counted', (cookie || local) ? STATUS.excluded : STATUS.counted);
+        }
+
+        ownerToggle.addEventListener('change', async () => {
+            const exclude = ownerToggle.checked;
+            ownerToggle.disabled = true;
+            const ok = await applyOwner(exclude);
+            ownerToggle.disabled = false;
+            if (exclude) setOwnerStatus('excluded', ok ? STATUS.excluded : STATUS.excluded + " (Saved on this browser; the server couldn't be reached just now.)");
+            else if (ok) setOwnerStatus('counted', STATUS.counted);
+            else {
+                ownerToggle.checked = true;
+                setOwnerStatus('error', "Couldn't switch counting back on because the server didn't respond. This browser is still excluded.");
+            }
+        });
+
+        // ---------------------------------------------------------------- page chrome
+        if (TEST) document.querySelectorAll('[data-home]').forEach(a => { a.href = '/?ns=test'; });
+
+        const navbar = $('navbar');
+        const onScroll = () => navbar.classList.toggle('scrolled', window.scrollY > 50);
+        window.addEventListener('scroll', onScroll, { passive: true });
+        onScroll();
+
+        const reveals = document.querySelectorAll('.reveal');
+        if (reduceMotion || !('IntersectionObserver' in window)) {
+            reveals.forEach(el => el.classList.add('active'));
+        } else {
+            const io = new IntersectionObserver(entries => entries.forEach(entry => {
+                if (entry.isIntersecting) { entry.target.classList.add('active'); io.unobserve(entry.target); }
+            }), { threshold: 0.1, rootMargin: '0px 0px -50px 0px' });
+            reveals.forEach(el => io.observe(el));
+        }
+
+        syncRange();
+        initOwner();
+        load();
+    })();
+    </script>
+</body>
+</html>

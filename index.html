@@ -112,6 +112,59 @@
         .nav-links a { color: var(--gray-400); text-decoration: none; font-size: 0.9rem; font-weight: 500; transition: color 0.2s ease; }
         .nav-links a:hover { color: var(--white); }
 
+        /* Visit counter (nav, top right): hidden until /api/hit answers, links to /stats */
+        .nav-actions { display: flex; align-items: stretch; gap: 8px; flex-shrink: 0; }
+        .visits-slot { display: flex; justify-content: flex-end; min-width: 92px; }
+        .visits {
+            display: inline-flex; align-items: center; gap: 7px; padding: 0 11px;
+            border: 1px solid rgba(255,255,255,0.12); border-radius: var(--radius-md);
+            background: rgba(255,255,255,0.03); color: var(--gray-400);
+            font-size: 0.8rem; font-weight: 500; line-height: 1; text-decoration: none; white-space: nowrap;
+            opacity: 0; transition: opacity 0.5s var(--ease), border-color 0.2s ease, background 0.2s ease, color 0.2s ease;
+        }
+        .visits.is-ready { opacity: 1; }
+        .visits:hover { color: var(--gray-300); border-color: rgba(16,185,129,0.4); background: var(--green-subtle); }
+        .visits:focus-visible { outline: 2px solid var(--green-primary); outline-offset: 2px; }
+        .visits svg { width: 15px; height: 15px; flex-shrink: 0; color: var(--green-primary); }
+        .visits-num { color: var(--white); font-weight: 700; font-variant-numeric: tabular-nums; }
+        .visits-short, .visits-unit, .visits-period { display: none; }
+        @media (min-width: 600px) and (max-width: 899px), (min-width: 1200px) { .visits-unit, .visits-period { display: inline; } }
+        @media (min-width: 900px) and (max-width: 1199px) { .visits-unit { display: inline; } }
+        @media (min-width: 900px) and (max-width: 1023px) { .nav-links { gap: 24px; } }
+        /* Reserve the counter's slot at every width so nothing moves when it appears (it stays empty if the API fails) */
+        @media (min-width: 600px) { .visits-slot { min-width: 212px; } }
+        @media (min-width: 900px) { .visits-slot { min-width: 130px; } }
+        @media (min-width: 1024px) { .visits-slot { min-width: 140px; } }
+        @media (min-width: 1200px) { .visits-slot { min-width: 220px; } }
+        /* Small phones: the nav CV button becomes icon + "CV" (its accessible name stays "Download CV") */
+        .nav-cv-icon { display: none; }
+        @media (max-width: 419px) {
+            .nav-actions .nav-cv { padding: 10px 12px; gap: 6px; }
+            .nav-cv .nav-cv-icon { display: block; width: 16px; height: 16px; }
+            .nav-cv-extra { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); clip-path: inset(50%); white-space: nowrap; }
+        }
+        @media (max-width: 359px) {
+            .nav-content { gap: 10px; }
+            .nav-actions { gap: 6px; }
+            .nav-actions .nav-cv { padding: 10px; }
+            .visits { padding: 0 7px; gap: 5px; }
+            .visits-slot { min-width: 70px; }
+            .visits-full { display: none; }
+            .visits-short { display: inline; }
+        }
+        /* Where the label leaves out "last 30 days", hover/focus shows it (aria-hidden: the link's aria-label already says it) */
+        .visits { position: relative; }
+        .visits-tip {
+            position: absolute; top: calc(100% + 8px); right: 0; padding: 7px 10px; pointer-events: none;
+            border: 1px solid rgba(255,255,255,0.12); border-radius: var(--radius-md); background: rgba(22,22,22,0.97);
+            box-shadow: 0 12px 32px rgba(0,0,0,0.5); color: var(--gray-300); font-size: 0.75rem; line-height: 1.4; white-space: nowrap;
+            visibility: hidden; opacity: 0; transform: translateY(-4px);
+            transition: opacity 0.15s ease, transform 0.15s ease, visibility 0s linear 0.15s;
+        }
+        .visits:hover .visits-tip, .visits:focus-visible .visits-tip { visibility: visible; opacity: 1; transform: none; transition-delay: 0s; }
+        @media (min-width: 600px) and (max-width: 899px), (min-width: 1200px) { .visits-tip { display: none; } }
+        @media (prefers-reduced-motion: reduce) { .visits, .visits-tip { transition: none; } }
+
         /* Buttons */
         .btn {
             display: inline-flex; align-items: center; justify-content: center; gap: 10px;
@@ -317,7 +370,7 @@
         .footer-links { display: flex; flex-wrap: wrap; justify-content: center; gap: 24px; list-style: none; }
         .footer-links a { color: var(--gray-400); text-decoration: none; font-size: 0.88rem; }
         .footer-links a:hover { color: var(--white); }
-        .footer-copy { color: var(--gray-600); font-size: 0.85rem; }
+        .footer-copy { color: var(--gray-400); font-size: 0.85rem; }
 
         [hidden] { display: none !important; }
     </style>
@@ -337,7 +390,19 @@
                 <li><a href="#education">Education</a></li>
                 <li><a href="#contact">Contact</a></li>
             </ul>
-            <a href="Yunus_Seven_CV_2026.pdf" class="btn btn-primary btn-sm" data-cv download>Download CV</a>
+            <div class="nav-actions">
+                <div class="visits-slot">
+                    <a href="/stats" class="visits" id="visits" hidden>
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
+                        <span><span class="visits-num"><span class="visits-full"></span><span class="visits-short"></span></span><span class="visits-unit"> visits</span><span class="visits-period"> · last 30 days</span></span>
+                        <span class="visits-tip" aria-hidden="true">Visits in the last 30 days</span>
+                    </a>
+                </div>
+                <a href="Yunus_Seven_CV_2026.pdf" class="btn btn-primary btn-sm nav-cv" data-cv download>
+                    <svg class="nav-cv-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
+                    <span><span class="nav-cv-extra">Download </span>CV</span>
+                </a>
+            </div>
         </div>
     </nav>
 
@@ -743,6 +808,7 @@
             initCursorGlow();
             initScrollProgress();
             hideMissingCv();
+            initTraffic();
         });
 
         const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -825,6 +891,66 @@
             fetch(links[0].getAttribute('href'), { method: 'HEAD' })
                 .then(r => { if (!r.ok) links.forEach(l => l.hidden = true); })
                 .catch(() => links.forEach(l => l.hidden = true));
+        }
+
+        // Anonymous traffic counting (see /stats): one view per page load, plus Download CV clicks.
+        // Normal visitors get no cookies and nothing in storage; the server keeps no IPs or user agents.
+        // A browser excluded via /stats?owner=exclude has a server-set cookie and the localStorage
+        // flag ys_owner=1, and its hits never change any number.
+        function initTraffic() {
+            if (location.protocol === 'file:') return;
+            const testNs = new URLSearchParams(location.search).get('ns') === 'test';
+            const endpoint = testNs ? '/api/hit?ns=test' : '/api/hit';
+            let owner = false;
+            try { owner = localStorage.getItem('ys_owner') === '1'; } catch (e) { /* storage blocked */ }
+
+            const payload = (type, extra) => JSON.stringify(Object.assign({ type }, extra, owner ? { owner: true } : null));
+
+            // Only the referring site's scheme and host leave the browser, never its path or query.
+            let ref = '';
+            try { if (document.referrer) { const u = new URL(document.referrer); ref = (u.protocol + '//' + u.host).slice(0, 2048); } } catch (e) { /* unparsable: counts as Direct */ }
+
+            const sendView = () => fetch(endpoint, {
+                method: 'POST', keepalive: true, credentials: 'same-origin',
+                headers: { 'Content-Type': 'application/json' },
+                body: payload('view', ref ? { ref } : null)
+            })
+                .then(r => r.json().then(data => r.ok ? data : null)) // read the body even on errors
+                .then(data => {
+                    if (!data) return;
+                    // Keep the opt-out backup in sync when only the server cookie is present.
+                    if (data.reason === 'owner' && !owner) { try { localStorage.setItem('ys_owner', '1'); } catch (e) { /* ignore */ } }
+                    const visits = data.last30 && data.last30.visits;
+                    if (Number.isFinite(visits) && visits >= 0) showVisits(Math.round(visits), testNs);
+                })
+                .catch(() => { /* counter stays hidden */ });
+            // A page Chrome prerenders in the background (e.g. a search result) only counts once it's actually opened.
+            if (document.prerendering) document.addEventListener('prerenderingchange', sendView, { once: true });
+            else sendView();
+
+            // Download CV clicks: fire-and-forget so the download itself is never delayed.
+            document.querySelectorAll('[data-cv]').forEach(link => link.addEventListener('click', () => {
+                const body = payload('download');
+                try { if (navigator.sendBeacon && navigator.sendBeacon(endpoint, body)) return; } catch (e) { /* fall back to fetch */ }
+                fetch(endpoint, { method: 'POST', keepalive: true, credentials: 'same-origin', headers: { 'Content-Type': 'text/plain' }, body }).catch(() => {});
+            }));
+        }
+
+        function showVisits(n, testNs) {
+            const link = document.getElementById('visits');
+            if (!link) return;
+            const full = new Intl.NumberFormat('en-GB').format(n);
+            const short = n >= 1000 ? new Intl.NumberFormat('en-GB', { notation: 'compact', maximumFractionDigits: n >= 100000 ? 0 : 1 }).format(n) : full;
+            const unit = n === 1 ? 'visit' : 'visits';
+            const label = `${full} ${unit} in the last 30 days. View traffic details`;
+            link.querySelector('.visits-full').textContent = n >= 100000 ? short : full;
+            link.querySelector('.visits-short').textContent = short;
+            link.querySelector('.visits-unit').textContent = ' ' + unit;
+            link.setAttribute('aria-label', label);
+            if (testNs) link.href = '/stats?ns=test';
+            link.hidden = false;
+            void link.offsetWidth; // start the fade from opacity 0
+            link.classList.add('is-ready');
         }
     </script>
 </body>

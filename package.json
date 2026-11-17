@@ -1,0 +1,8 @@
+{
+  "name": "yunus-seven-cv",
+  "private": true,
+  "description": "Yunus Seven's CV website: static HTML, plus Netlify Functions for the anonymous traffic counter",
+  "dependencies": {
+    "@netlify/blobs": "11.1.7"
+  }
+}

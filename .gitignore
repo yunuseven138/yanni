@@ -1,6 +1,9 @@
 # Netlify
 .netlify/
 
+# npm dependencies (Netlify installs them from package-lock.json when it builds)
+node_modules/
+
 # OS files
 .DS_Store
 Thumbs.db

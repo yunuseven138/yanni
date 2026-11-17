@@ -5,6 +5,11 @@
   # No build command needed — static HTML
   publish = "."
 
+# Node.js for the build, which the functions runtime follows: @netlify/blobs 11 needs Node 22.12+.
+# 24 is the current LTS (22 reaches end of life in April 2027).
+[build.environment]
+  NODE_VERSION = "24"
+
 # Production context
 [context.production]
   environment = { NODE_ENV = "production" }
@@ -24,8 +29,8 @@
     Cache-Control = "public, max-age=0, must-revalidate"
 
 # The publish dir is the repo root, so stop project files that aren't part
-# of the site (edge function source, project notes, this config) from being
-# served as static files.
+# of the site (function and edge function source, npm files, project notes,
+# this config) from being served as static files.
 [[redirects]]
   from = "/netlify/*"
   to = "/404.html"
@@ -40,6 +45,24 @@
 
 [[redirects]]
   from = "/netlify.toml"
+  to = "/404.html"
+  status = 404
+  force = true
+
+[[redirects]]
+  from = "/package.json"
+  to = "/404.html"
+  status = 404
+  force = true
+
+[[redirects]]
+  from = "/package-lock.json"
+  to = "/404.html"
+  status = 404
+  force = true
+
+[[redirects]]
+  from = "/node_modules/*"
   to = "/404.html"
   status = 404
   force = true
